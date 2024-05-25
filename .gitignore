@@ -3,5 +3,7 @@ bin/
 .vs/
 .vscode/
 .cache/
+.idea/
+.cmake-build-debug/
 
 .DS_Store
