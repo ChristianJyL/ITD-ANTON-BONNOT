@@ -1,4 +1,6 @@
 #include <glad/glad.h>
+#include "include/file.hpp"
+#include "include/graph.hpp"
 
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
@@ -18,6 +20,26 @@ namespace {
 constexpr double TARGET_TIME_FOR_FRAME { 1.0 / 60.0 };
 
 int main() {
+/*
+    ITD itd;
+    std::filesystem::path path {"data/map.itd"};
+    if (isValidITD(path,itd)) {
+        std::cout << "ITD file is valid" << std::endl;
+    } else {
+        std::cout << "ITD file is not valid" << std::endl;
+    }
+
+    std::cout << getWeight(itd.list_adjacency, 0, 1) << std::endl;
+
+    std::cout << "test" << std::endl;
+    Graph::WeightedGraph graph_from_function = Graph::build_from_adjacency_list(itd.list_adjacency);
+
+    graph_from_function.print_DFS(0);
+
+
+    return 0;*/
+
+
     // Set an error callback to display glfw errors
     glfwSetErrorCallback([](int error, const char* description) {
         std::cerr << "Error " << error << ": " << description << std::endl;

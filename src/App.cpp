@@ -5,6 +5,7 @@
 #include <img/img.hpp>
 
 #include <sstream>
+#include <iostream>
 
 #include "simpletext.h"
 #include "include/utils.hpp"
@@ -12,7 +13,23 @@
 
 App::App() : _previousTime(0.0), _viewSize(2.0) {
    // load what needs to be loaded here (for example textures)
-    img::Image test {img::load(make_absolute_path("images/level.png", true), 3, true)};
+    glm::u8vec3 start {0, 0, 255};
+    glm::u8vec3 end {255, 0, 0};
+    glm::u8vec3 path {0, 0, 0};
+
+
+
+    img::Image test {img::load(make_absolute_path("images/map.png", true), 3, true)};
+    std::vector<glm::u8vec3> pixels {pixels_as_vec3(test)};
+    for (unsigned int y = 0; y < test.height(); ++y)
+    {
+        for (unsigned int x = 0; x < test.width(); ++x)
+        {
+            auto const& pixel {pixels[y * test.width() + x]};
+            std::cout << (pixel == start ? "S" : pixel == end ? "E" : pixel == path ? "#" : "_");
+        }
+        std::cout << std::endl;
+    }
     _texture = loadTexture(test);
 }
 

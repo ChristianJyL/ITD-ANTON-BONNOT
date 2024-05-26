@@ -1,6 +1,8 @@
 #pragma once
 #include <filesystem>
 #include <glm/glm.hpp>
+#include <vector>
+#include <img/img.hpp>
 
 std::filesystem::path make_absolute_path(std::filesystem::path const& path, bool check_path_exists = true);
 
@@ -38,3 +40,6 @@ auto const is_img = [](std::string extension){
     }
     return false;
 };
+
+
+std::vector<glm::u8vec3> pixels_as_vec3(img::Image const& image);
