@@ -2,11 +2,12 @@
 #include <filesystem>
 #include <string>
 #include <vector>
-#include <glm/glm.hpp>
+#include "glm/glm.hpp"
 
-struct Tower{
+
+struct Enemy{
     int x,y;
-    int power;
-    int range;
-    int cadence;
+    int pv;
+    int speed;
+    int reward;
 };

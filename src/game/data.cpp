@@ -1,13 +1,13 @@
-#include "include/data.hpp"
-#include "include/Enemy.hpp"
-#include "include/Tower.hpp"
+#include "data.hpp"
+#include "entity/Enemy.hpp"
+#include "entity/Tower.hpp"
 #include "include/file.hpp"
-#include "include/GLHelpers.hpp"
+#include "model.hpp"
 
 #include <img/img.hpp>
 #include <iostream>
 #include <vector>
-#include <glm/glm.hpp>
+#include "glm/glm.hpp"
 #include "include/utils.hpp"
 
 /*struct Data{

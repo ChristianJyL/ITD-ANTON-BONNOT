@@ -1,8 +1,8 @@
-#include "include/App.hpp"
-#include "include/data.hpp"
+#include "App.hpp"
+#include "data.hpp"
 
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
+#include "glad/glad.h"
+#include "GLFW/glfw3.h"
 #include <img/img.hpp>
 
 #include <sstream>
@@ -10,7 +10,7 @@
 
 #include "simpletext.h"
 #include "include/utils.hpp"
-#include "include/GLHelpers.hpp"
+#include "model.hpp"
 
 App::App() : _previousTime(0.0), _viewSize(2.0) {
     // load what needs to be loaded here (for example textures)

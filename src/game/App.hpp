@@ -1,6 +1,6 @@
 #pragma once
 
-#include <glad/glad.h>
+#include "glad/glad.h"
 #include <simpletext.h>
 
 class App {
