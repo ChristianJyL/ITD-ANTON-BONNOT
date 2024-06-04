@@ -148,5 +148,11 @@ int getWeight(const std::vector<Node>& nodes, int from, int to) {
     return std::sqrt(dx * dx + dy * dy);
 }
 
-
+std::unordered_map<int, std::pair<int, int>> getCoord(const std::vector<Node>& nodes){
+    std::unordered_map<int, std::pair<int, int>> coord;
+    for (const Node& node : nodes) {
+        coord[node.id] = {node.x, node.y};
+    }
+    return coord;
+}
 

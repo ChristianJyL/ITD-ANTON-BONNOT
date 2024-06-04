@@ -1,4 +1,5 @@
 #include "include/App.hpp"
+#include "include/data.hpp"
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -13,24 +14,12 @@
 
 App::App() : _previousTime(0.0), _viewSize(2.0) {
    // load what needs to be loaded here (for example textures)
-    glm::u8vec3 start {0, 0, 255};
-    glm::u8vec3 end {255, 0, 0};
-    glm::u8vec3 path {0, 0, 0};
+   Data data;
+   data.loadFromITD("data/map.itd");
+   data.printGrid();
 
 
 
-    img::Image test {img::load(make_absolute_path("images/map.png", true), 3, true)};
-    std::vector<glm::u8vec3> pixels {pixels_as_vec3(test)};
-    for (unsigned int y = 0; y < test.height(); ++y)
-    {
-        for (unsigned int x = 0; x < test.width(); ++x)
-        {
-            auto const& pixel {pixels[y * test.width() + x]};
-            std::cout << (pixel == start ? "S" : pixel == end ? "E" : pixel == path ? "#" : "_");
-        }
-        std::cout << std::endl;
-    }
-    _texture = loadTexture(test);
 }
 
 void App::setup() {

@@ -34,3 +34,7 @@ std::vector<glm::u8vec3> pixels_as_vec3(img::Image const& image){
     }
     return pixels;
 }
+
+int convertY(int y, int height){
+    return height - y - 1;
+}

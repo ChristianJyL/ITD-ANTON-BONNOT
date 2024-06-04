@@ -31,3 +31,4 @@ bool isfileExists(const std::string& filename);
 bool isRGB(const std::string& value);
 bool isValidITD(std::filesystem::path const& path, ITD &itd);
 int getWeight(const std::vector<Node>& nodes, int from, int to);
+std::unordered_map<int, std::pair<int, int>> getCoord(const std::vector<Node>& nodes);
