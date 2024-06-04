@@ -30,7 +30,7 @@ namespace Graph{
         for (Node const& node : adjacency_list){
             for (int const& voisin : adjacency_list[node.id].neighbours){
                 result.add_directed_edge(node.id, voisin, getWeight(adjacency_list, node.id, voisin));
-                std::cout << "from : " << node.id << " to : " << voisin << " weight : " << getWeight(adjacency_list, node.id, voisin) << std::endl;
+                //std::cout << "from : " << node.id << " to : " << voisin << " weight : " << getWeight(adjacency_list, node.id, voisin) << std::endl;
             }
         }
         return result;

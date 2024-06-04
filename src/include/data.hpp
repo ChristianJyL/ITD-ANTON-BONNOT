@@ -2,6 +2,7 @@
 #include <vector>
 #include "file.hpp"
 #include <img/img.hpp>
+#include "graph.hpp"
 
 enum class TileType {
     Empty = 0,
@@ -13,6 +14,9 @@ enum class TileType {
 
 struct Data{
     std::vector<int> grid; // 0 = empty, 1 = path, 2 = input, 3 = output  | Liste 2D de la grille
+    Graph::WeightedGraph graph;
+    std::unordered_map<int, std::pair<int, int>> coordNodes;
+
     int width; // Largeur de la grille
     int height; // Hauteur de la grille
     glm::u8vec3 start; // Couleur du début du chemin
@@ -22,7 +26,7 @@ struct Data{
 
     int  getCell(int x, int y) const; // Récupère la valeur de la cellule à la position (x, y)
     void setCell(int x, int y, int value) ; // Modifie la valeur de la cellule à la position (x, y)
-    void loadFromITD(std::filesystem::path const& path, img::Image &image_map) ; // Charge les données à partir d'un fichier ITD
+    void loadFromITD(std::filesystem::path const& pathFile) ; // Charge les données à partir d'un fichier ITD
     void initGrid(int width, int height) ; // Initialise la grille avec des cases vides
     void printGrid() const; // Affiche la grille
 };

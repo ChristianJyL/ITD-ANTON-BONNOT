@@ -33,7 +33,7 @@ void Data::initGrid(int width, int height) {
     grid.resize(width * height, 0);
 }
 
-void Data::loadFromITD(std::filesystem::path const& pathFile, img::Image &image_map) {
+void Data::loadFromITD(std::filesystem::path const& pathFile) {
     ITD itd;
     if (!isValidITD(pathFile, itd)) {
         throw std::runtime_error{"Invalid ITD file"};
@@ -42,7 +42,7 @@ void Data::loadFromITD(std::filesystem::path const& pathFile, img::Image &image_
     end = itd.out;
     path = itd.path;
 
-    image_map = {img::load(make_absolute_path("images/" + itd.map , true), 3, true)};
+    img::Image image_map = {img::load(make_absolute_path("images/" + itd.map , true), 3, true)};
     std::vector<glm::u8vec3> pixels {pixels_as_vec3(image_map)};
     initGrid(image_map.width(), image_map.height());
     for (int y = 0; y < image_map.height(); ++y)
@@ -60,6 +60,8 @@ void Data::loadFromITD(std::filesystem::path const& pathFile, img::Image &image_
         }
     }
 
+    graph = Graph::build_from_adjacency_list(itd.list_adjacency);
+    coordNodes = getCoord(itd.list_adjacency);
 }
 
 void Data::printGrid() const {

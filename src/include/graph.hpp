@@ -36,5 +36,6 @@ namespace Graph {
 
     WeightedGraph build_from_adjacency_list(std::vector<Node> const& adjacency_list);
 
+
 } // namespace
 

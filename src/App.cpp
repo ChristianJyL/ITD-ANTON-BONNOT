@@ -13,12 +13,25 @@
 #include "include/GLHelpers.hpp"
 
 App::App() : _previousTime(0.0), _viewSize(2.0) {
-   // load what needs to be loaded here (for example textures)
-   Data data;
-   data.loadFromITD("data/map.itd");
-   data.printGrid();
+    // load what needs to be loaded here (for example textures)
+    Data data;
+    img::Image image_map = {img::load(make_absolute_path("images/map.png", true), 3, true)};
+    data.loadFromITD("data/map.itd");
+    _texture = loadTexture(image_map);
 
+    // Afficher grid
+    std::cout<<"Grid: " << std::endl;
+    data.printGrid();
 
+    // Afficher coordNodes
+    std::cout<<"Coordonnée nodes: " << std::endl;
+    for (const auto& pair : data.coordNodes) {
+        std::cout << "Key: " << pair.first << " Value: (" << pair.second.first << ", " << pair.second.second << ")" << std::endl;
+    }
+
+    // Afficher graph
+    std::cout << "Graph: " << std::endl;
+    data.graph.print_DFS(0);
 
 }
 
