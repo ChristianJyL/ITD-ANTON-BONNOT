@@ -2,6 +2,8 @@
 
 #include "glad/glad.h"
 
+
+
 GLuint loadTexture(uint8_t const* data, int width, int height) {
     GLuint textureId {};
 
@@ -29,17 +31,25 @@ void draw_quad_with_texture(GLuint textureId) {
     glColor3ub(255, 255, 255);
     glBegin(GL_QUADS);
         glTexCoord2d(0,0);
-        glVertex2f(-0.5f, -0.5f);
+        //calcul x min with aspect ratio...
+        int width = 1280;
+        int height = 720;
+        float aspect_ratio = (float)width / (float)height;
+        float x_min = -1.0f * aspect_ratio;
+        float y_min = -1.0f * aspect_ratio;
+        glVertex2f(x_min, -1);
+
 
         glTexCoord2d(1,0);
-        glVertex2f(0.5f, -0.5f);
+        glVertex2f(x_min+3.0f, -1);
 
         glTexCoord2d(1,1);
-        glVertex2f(0.5f, 0.5f);
+        glVertex2f(x_min+3.0f, 0.5f);
 
         glTexCoord2d(0,1);
-        glVertex2f(-0.5f, 0.5f);
+        glVertex2f(x_min, 0.5f);
     glEnd();
     glBindTexture(GL_TEXTURE_2D, 0);
     glDisable(GL_TEXTURE_2D);
 }
+

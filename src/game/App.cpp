@@ -15,7 +15,7 @@
 App::App() : _previousTime(0.0), _viewSize(2.0) {
     // load what needs to be loaded here (for example textures)
     Data data;
-    img::Image image_map = {img::load(make_absolute_path("images/map.png", true), 3, true)};
+    img::Image image_map = {img::load(make_absolute_path("images/map2.png", true), 3, true)};
     data.loadFromITD("data/map.itd");
     _texture = loadTexture(image_map);
 
@@ -100,21 +100,19 @@ void App::mouse_button_callback(int button, int action, int mods) {
 
         std::cout << "x: " << x << " y: " << y << std::endl;
 
-        // Définir la taille de la tuile
         const float tileWidth = 0.1;  // Chaque tuile correspond à un pixel
         const float tileHeight = 0.1; // Chaque tuile correspond à un pixel
 
-
-
+        float aspect_ratio = (float)_width / (float)_height;
+        float x_min = -1.0f * aspect_ratio;
         // Détermine la partie de la fenêtre sur laquelle l'utilisateur a cliqué
-        if (x >= -0.5 && x < 0.5 && y >= -0.5 && y < 0.5) {
-
-            //Faire en sorte que la première tuile soit en haut à gauche donc au point -0.5, 0.5
+        if (x >= x_min && x < x_min+3.0 && y >= -1 && y < 0.5) {
             //Une tuile fait 0.1 de largeur et 0.1 de hauteur
 
             //Calculer la tuile sur laquelle l'utilisateur a cliqué
-            int tileX = (x + 0.5) / tileWidth;
-            int tileY = (0.5 - y) / tileHeight;
+            int tileX = (x - x_min) / tileWidth;
+            int tileY = (y - 0.5f) / tileHeight;
+
 
 
             std::cout << "Tile clicked: (" << tileX << ", " << tileY << ")" << std::endl;
