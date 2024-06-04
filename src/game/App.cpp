@@ -9,7 +9,7 @@
 #include <iostream>
 
 #include "simpletext.h"
-#include "include/utils.hpp"
+#include "other/utils.hpp"
 #include "model.hpp"
 
 App::App() : _previousTime(0.0), _viewSize(2.0) {
@@ -54,7 +54,7 @@ void App::update() {
 
     _angle += 10.0f * elapsedTime;
     // _angle = std::fmod(_angle, 360.0f);
-    
+
     render();
 }
 
@@ -64,18 +64,10 @@ void App::render() {
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
-    // render exemple quad
-    glColor3f(1.0f, 0.0f, 0.0f);
-    glBegin(GL_QUADS);
-        glVertex2f(-0.5f, -0.5f);
-        glVertex2f(0.5f, -0.5f);
-        glVertex2f(0.5f, 0.5f);
-        glVertex2f(-0.5f, 0.5f);
-    glEnd();
-
     draw_quad_with_texture(_texture);
 
-    
+
+    //
 
     // Without set precision
     // const std::string angle_label_text { "Angle: " + std::to_string(_angle) };
@@ -96,7 +88,39 @@ void App::render() {
 void App::key_callback(int /*key*/, int /*scancode*/, int /*action*/, int /*mods*/) {
 }
 
-void App::mouse_button_callback(int /*button*/, int /*action*/, int /*mods*/) {
+void App::mouse_button_callback(int button, int action, int mods) {
+    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
+        // Le bouton gauche de la souris a été pressé
+        double xpos, ypos;
+        // Récupère la position actuelle du curseur
+        glfwGetCursorPos(glfwGetCurrentContext(), &xpos, &ypos);
+
+        float x =  (xpos - _width / 2) * 2.0f / _height;
+        float y = 1 - ypos / (_height / 2);
+
+        std::cout << "x: " << x << " y: " << y << std::endl;
+
+        // Définir la taille de la tuile
+        const float tileWidth = 0.1;  // Chaque tuile correspond à un pixel
+        const float tileHeight = 0.1; // Chaque tuile correspond à un pixel
+
+
+
+        // Détermine la partie de la fenêtre sur laquelle l'utilisateur a cliqué
+        if (x >= -0.5 && x < 0.5 && y >= -0.5 && y < 0.5) {
+
+            //Faire en sorte que la première tuile soit en haut à gauche donc au point -0.5, 0.5
+            //Une tuile fait 0.1 de largeur et 0.1 de hauteur
+
+            //Calculer la tuile sur laquelle l'utilisateur a cliqué
+            int tileX = (x + 0.5) / tileWidth;
+            int tileY = (0.5 - y) / tileHeight;
+
+
+            std::cout << "Tile clicked: (" << tileX << ", " << tileY << ")" << std::endl;
+        }
+
+    }
 }
 
 void App::scroll_callback(double /*xoffset*/, double /*yoffset*/) {

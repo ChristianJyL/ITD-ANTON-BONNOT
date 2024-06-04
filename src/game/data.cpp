@@ -1,22 +1,26 @@
 #include "data.hpp"
 #include "entity/Enemy.hpp"
 #include "entity/Tower.hpp"
-#include "include/file.hpp"
+#include "other/file.hpp"
 #include "model.hpp"
 
 #include <img/img.hpp>
 #include <iostream>
 #include <vector>
 #include "glm/glm.hpp"
-#include "include/utils.hpp"
+#include "other/utils.hpp"
 
 /*struct Data{
     std::vector<int> grid; // 0 = empty, 1 = path, 2 = input, 3 = output  | Liste 2D de la grille
+    Graph::WeightedGraph graph;
+    std::unordered_map<int, std::pair<int, int>> coordNodes;
+
     int width; // Largeur de la grille
     int height; // Hauteur de la grille
     glm::u8vec3 start; // Couleur du début du chemin
     glm::u8vec3 end; // Couleur de la fin du chemin
     glm::u8vec3 path; // Couleur du chemin
+
 */
 
 void Data::setCell(int x, int y, int value) {

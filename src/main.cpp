@@ -1,6 +1,6 @@
 #include <glad/glad.h>
-#include "include/file.hpp"
-#include "include/graph.hpp"
+#include "other/file.hpp"
+#include "other/graph.hpp"
 
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>

@@ -1,8 +1,8 @@
 #pragma once
 #include <vector>
-#include "include/file.hpp"
+#include "other/file.hpp"
 #include <img/img.hpp>
-#include "include/graph.hpp"
+#include "other/graph.hpp"
 
 enum class TileType {
     Empty = 0,

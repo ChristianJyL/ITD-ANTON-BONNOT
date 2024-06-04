@@ -1,5 +1,5 @@
-#include "include/graph.hpp"
-#include "include/file.hpp"
+#include "other/graph.hpp"
+#include "other/file.hpp"
 #include <iostream>
 #include <vector>
 #include <stack>
