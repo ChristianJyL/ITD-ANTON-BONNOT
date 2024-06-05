@@ -78,3 +78,17 @@ void Data::printGrid() const {
         std::cout << std::endl;
     }
 }
+
+bool Data::isEverythingValid() const {
+    for (const auto& node : coordNodes) {
+        int nodeIndex = node.first;
+        int nodeX = node.second.first;
+        int nodeY = node.second.second;
+        int gridIndex = getCell(nodeX, nodeY);
+
+        if (gridIndex != 1 && gridIndex != 2 && gridIndex != 3) { // on vérif si c'est un path, un input ou un output
+            return false;
+        }
+    }
+    return true;
+}

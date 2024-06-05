@@ -41,6 +41,8 @@ App::App() : _previousTime(0.0), _viewSize(2.0) {
     std::cout << "Graph: " << std::endl;
     data.graph.print_DFS(0);
 
+    std::cout << "Is everything valid: " << data.isEverythingValid() << std::endl;
+
 
 }
 
@@ -118,7 +120,7 @@ void App::mouse_button_callback(int button, int action, int mods) {
             //Une tuile fait 0.1 de largeur et 0.1 de hauteur
             //Calculer la tuile sur laquelle l'utilisateur a cliqué
             int tileX = (x - x_min) / tileWidth;
-            int tileY = (y - 0.5f) / tileHeight;
+            int tileY = -(y - 0.5f) / tileHeight;
             std::cout << "Tile clicked: (" << tileX << ", " << tileY << ")" << std::endl;
         } else if (x >= x_min && x < x_min+3.0 && y >= 0.5 && y < 1) { //Clique sur le deck
             std::cout << "Card" << std::endl;

@@ -77,10 +77,9 @@ void draw_one_card(GLuint textureId, float x, float y, float width, float height
 
 void draw_deck(GLuint textureId, float x, float y, float width, float height, int nb_cards){ //mettre un vecteur de GLuint à terme pour les textures
     float increment = width / nb_cards;
-    float card_width = width / nb_cards; 
+    float card_width = width / nb_cards;
     for(int i = 0; i < nb_cards; i++){
         glColor3f(1.0f, i%2, 1.0f - i * 0.1f);
         draw_one_card(textureId, x + i * increment, y, card_width, height);
-
     }
 }

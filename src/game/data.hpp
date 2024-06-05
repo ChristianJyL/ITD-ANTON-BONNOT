@@ -13,7 +13,7 @@ enum class TileType {
 };
 
 struct Data{
-    std::vector<int> grid; // 0 = empty, 1 = path, 2 = input, 3 = output  | Liste 2D de la grille
+    std::vector<int> grid; // 0 = empty, 1 = path, 2 = input, 3 = output  | Liste 1D de la grille
     Graph::WeightedGraph graph;
     std::unordered_map<int, std::pair<int, int>> coordNodes;
 
@@ -29,6 +29,7 @@ struct Data{
     void loadFromITD(std::filesystem::path const& pathFile) ; // Charge les données à partir d'un fichier ITD
     void initGrid(int width, int height) ; // Initialise la grille avec des cases vides
     void printGrid() const; // Affiche la grille
+    bool isEverythingValid() const; // Vérifie si les données sont valides
 };
 
 
