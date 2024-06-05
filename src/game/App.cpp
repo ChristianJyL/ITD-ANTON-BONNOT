@@ -12,12 +12,20 @@
 #include "other/utils.hpp"
 #include "model.hpp"
 
+static const float tileWidth = 0.1;
+static const float tileHeight = 0.1;
+
+
+
 App::App() : _previousTime(0.0), _viewSize(2.0) {
     // load what needs to be loaded here (for example textures)
+
     Data data;
     img::Image image_map = {img::load(make_absolute_path("images/map2.png", true), 3, true)};
+    img::Image image_deck = {img::load(make_absolute_path("images/level.png", true), 3, true)};
     data.loadFromITD("data/map.itd");
     _texture = loadTexture(image_map);
+
 
     // Afficher grid
     std::cout<<"Grid: " << std::endl;
@@ -33,6 +41,7 @@ App::App() : _previousTime(0.0), _viewSize(2.0) {
     std::cout << "Graph: " << std::endl;
     data.graph.print_DFS(0);
 
+
 }
 
 void App::setup() {
@@ -44,6 +53,7 @@ void App::setup() {
     TextRenderer.SetColor(SimpleText::TEXT_COLOR, SimpleText::Color::WHITE);
     TextRenderer.SetColorf(SimpleText::BACKGROUND_COLOR, 0.f, 0.f, 0.f, 0.f);
     TextRenderer.EnableBlending(true);
+    _aspectRatio = (float)_width / (float)_height;
 }
 
 void App::update() {
@@ -63,8 +73,12 @@ void App::render() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
+    static float x_min = -1.0f * _aspectRatio;
 
     draw_quad_with_texture(_texture);
+    draw_deck(_texture, x_min, 0.5f, 3.0f, 0.5f, 5);
+
+
 
 
     //
@@ -94,28 +108,22 @@ void App::mouse_button_callback(int button, int action, int mods) {
         double xpos, ypos;
         // Récupère la position actuelle du curseur
         glfwGetCursorPos(glfwGetCurrentContext(), &xpos, &ypos);
-
         float x =  (xpos - _width / 2) * 2.0f / _height;
         float y = 1 - ypos / (_height / 2);
 
         std::cout << "x: " << x << " y: " << y << std::endl;
-
-        const float tileWidth = 0.1;  // Chaque tuile correspond à un pixel
-        const float tileHeight = 0.1; // Chaque tuile correspond à un pixel
-
-        float aspect_ratio = (float)_width / (float)_height;
-        float x_min = -1.0f * aspect_ratio;
+        float x_min = -1.0f * _aspectRatio;
         // Détermine la partie de la fenêtre sur laquelle l'utilisateur a cliqué
-        if (x >= x_min && x < x_min+3.0 && y >= -1 && y < 0.5) {
+        if (x >= x_min && x < x_min+3.0 && y >= -1 && y < 0.5) { //Clique sur la map
             //Une tuile fait 0.1 de largeur et 0.1 de hauteur
-
             //Calculer la tuile sur laquelle l'utilisateur a cliqué
             int tileX = (x - x_min) / tileWidth;
             int tileY = (y - 0.5f) / tileHeight;
-
-
-
             std::cout << "Tile clicked: (" << tileX << ", " << tileY << ")" << std::endl;
+        } else if (x >= x_min && x < x_min+3.0 && y >= 0.5 && y < 1) { //Clique sur le deck
+            std::cout << "Card" << std::endl;
+        } else { //Clique sur le menu/info (avec un else pour l'instant, à voir si on change)
+            std::cout << "menu/info" << std::endl;
         }
 
     }

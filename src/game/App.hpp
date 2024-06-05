@@ -24,6 +24,7 @@ private:
     int _height {};
     double _previousTime {};
     float _viewSize {};
+    float _aspectRatio {};
 
     // Add your variables here
     GLuint _texture {};

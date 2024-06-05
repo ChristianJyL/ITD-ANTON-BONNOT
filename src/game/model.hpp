@@ -7,3 +7,6 @@ GLuint loadTexture(uint8_t const* data, int width, int height);
 inline GLuint loadTexture(img::Image const& image) { return loadTexture(image.data(), image.width(), image.height()); }
 
 void draw_quad_with_texture(GLuint textureId);
+
+void draw_one_card(GLuint textureId, float x, float y, float width, float height);
+void draw_deck(GLuint textureId, float x, float y, float width, float height, int nb_cards);

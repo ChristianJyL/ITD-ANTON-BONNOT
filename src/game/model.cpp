@@ -1,6 +1,7 @@
 #include "model.hpp"
 
 #include "glad/glad.h"
+#include <iostream>
 
 
 
@@ -53,3 +54,33 @@ void draw_quad_with_texture(GLuint textureId) {
     glDisable(GL_TEXTURE_2D);
 }
 
+void draw_one_card(GLuint textureId, float x, float y, float width, float height){
+    //glEnable(GL_TEXTURE_2D);
+    //glBindTexture(GL_TEXTURE_2D, textureId);
+    glBegin(GL_QUADS);
+        glTexCoord2d(0,0);
+        glVertex2f(x, y);
+
+        glTexCoord2d(1,0);
+        glVertex2f(x+width, y);
+
+        glTexCoord2d(1,1);
+        glVertex2f(x+width, y+height);
+
+        glTexCoord2d(0,1);
+        glVertex2f(x, y+height);
+    glEnd();
+    //glBindTexture(GL_TEXTURE_2D, 0);
+    //glDisable(GL_TEXTURE_2D);
+
+}
+
+void draw_deck(GLuint textureId, float x, float y, float width, float height, int nb_cards){ //mettre un vecteur de GLuint à terme pour les textures
+    float increment = width / nb_cards;
+    float card_width = width / nb_cards; 
+    for(int i = 0; i < nb_cards; i++){
+        glColor3f(1.0f, i%2, 1.0f - i * 0.1f);
+        draw_one_card(textureId, x + i * increment, y, card_width, height);
+
+    }
+}
