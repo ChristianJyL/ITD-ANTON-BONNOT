@@ -79,6 +79,7 @@ void App::render() {
 
     draw_quad_with_texture(_texture);
     draw_deck(_texture, x_min, 0.5f, 3.0f, 0.5f, 5);
+    draw_grid(x_min, -1, 0.1, 0.1);
 
 
 
@@ -124,6 +125,9 @@ void App::mouse_button_callback(int button, int action, int mods) {
             std::cout << "Tile clicked: (" << tileX << ", " << tileY << ")" << std::endl;
         } else if (x >= x_min && x < x_min+3.0 && y >= 0.5 && y < 1) { //Clique sur le deck
             std::cout << "Card" << std::endl;
+            //Calculer la carte sur laquelle l'utilisateur a cliqué
+            int cardX = (x - x_min) / (3.0f / 5.0f); //a voir pour utiliser une variable pour avoir quelque chose de variable
+            std::cout << "Card clicked: " << cardX << std::endl;
         } else { //Clique sur le menu/info (avec un else pour l'instant, à voir si on change)
             std::cout << "menu/info" << std::endl;
         }

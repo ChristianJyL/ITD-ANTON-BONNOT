@@ -83,3 +83,18 @@ void draw_deck(GLuint textureId, float x, float y, float width, float height, in
         draw_one_card(textureId, x + i * increment, y, card_width, height);
     }
 }
+
+void draw_grid(float x, float y, float width, float height){ //fonction d'aide pour voir la grille
+    glColor3f(1.0f, 1.0f, 1.0f);
+
+    glBegin(GL_LINES);
+    for(int i = 0; i < 30; i++){
+        glVertex2f(x + i * width, y);
+        glVertex2f(x + i * width, y + 1.5);
+    }
+    for(int i = 0; i < 15; i++){
+        glVertex2f(x, y + i * height);
+        glVertex2f(x + 3.0f, y + i * height);
+    }
+    glEnd();
+}

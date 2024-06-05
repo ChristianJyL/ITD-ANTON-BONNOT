@@ -10,3 +10,4 @@ void draw_quad_with_texture(GLuint textureId);
 
 void draw_one_card(GLuint textureId, float x, float y, float width, float height);
 void draw_deck(GLuint textureId, float x, float y, float width, float height, int nb_cards);
+void draw_grid(float x, float y , float width, float height);
