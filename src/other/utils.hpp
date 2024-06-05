@@ -44,3 +44,4 @@ auto const is_img = [](std::string extension){
 
 std::vector<glm::u8vec3> pixels_as_vec3(img::Image const& image);
 int convertY(int y, int height);
+

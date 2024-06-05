@@ -92,3 +92,15 @@ bool Data::isEverythingValid() const {
     }
     return true;
 }
+
+bool Data::isCardSelected() const {
+    return CardSelected != -1;
+}
+
+void Data::selectCard(int index) {
+    CardSelected = index;
+}
+
+void Data::unselectCard() {
+    CardSelected = -1;
+}

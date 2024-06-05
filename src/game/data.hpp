@@ -23,6 +23,8 @@ struct Data{
     glm::u8vec3 end; // Couleur de la fin du chemin
     glm::u8vec3 path; // Couleur du chemin
 
+    int CardSelected = -1;
+
 
     int  getCell(int x, int y) const; // Récupère la valeur de la cellule à la position (x, y)
     void setCell(int x, int y, int value) ; // Modifie la valeur de la cellule à la position (x, y)
@@ -30,6 +32,9 @@ struct Data{
     void initGrid(int width, int height) ; // Initialise la grille avec des cases vides
     void printGrid() const; // Affiche la grille
     bool isEverythingValid() const; // Vérifie si les données sont valides
+    bool isCardSelected() const; // Vérifie si une carte est sélectionnée
+    void selectCard(int index); // Sélectionne une carte
+    void unselectCard(); // Désélectionne une carte
 };
 
 

@@ -12,20 +12,17 @@
 #include "other/utils.hpp"
 #include "model.hpp"
 
-static const float tileWidth = 0.1;
-static const float tileHeight = 0.1;
+static const float TILE_WIDTH = 0.1;
+static const float TILE_HEIGHT = 0.1;
 
-
-
-App::App() : _previousTime(0.0), _viewSize(2.0) {
+App::App() : _previousTime(0.0), _viewSize(2.0) , _mouseX(0.0f), _mouseY(0.0f) {
     // load what needs to be loaded here (for example textures)
-
-    Data data;
     img::Image image_map = {img::load(make_absolute_path("images/map2.png", true), 3, true)};
     img::Image image_deck = {img::load(make_absolute_path("images/level.png", true), 3, true)};
     data.loadFromITD("data/map.itd");
     _texture = loadTexture(image_map);
-
+    _mapWidth = static_cast<float>(image_map.width()) /10.0f;
+    _mapHeight = static_cast<float>(image_map.height()) /10.0f;
 
     // Afficher grid
     std::cout<<"Grid: " << std::endl;
@@ -56,6 +53,9 @@ void App::setup() {
     TextRenderer.SetColorf(SimpleText::BACKGROUND_COLOR, 0.f, 0.f, 0.f, 0.f);
     TextRenderer.EnableBlending(true);
     _aspectRatio = (float)_width / (float)_height;
+    _xMin = -1.0f * _aspectRatio;
+
+
 }
 
 void App::update() {
@@ -75,16 +75,32 @@ void App::render() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    static float x_min = -1.0f * _aspectRatio;
 
     draw_quad_with_texture(_texture);
-    draw_deck(_texture, x_min, 0.5f, 3.0f, 0.5f, 5);
-    draw_grid(x_min, -1, 0.1, 0.1);
+    draw_deck(_texture, _xMin, 1.0f, _mapWidth, _mapHeight -1, 5);
 
+    if (data.isCardSelected()){
+        draw_grid_available(_xMin, 0.5f, TILE_WIDTH, TILE_HEIGHT, data);
+    }
 
+    draw_grid(_xMin, -1, TILE_WIDTH, TILE_HEIGHT);
 
+    
+    if (_mouseX >= _xMin && _mouseX < _xMin + _mapWidth && _mouseY >= -1 && _mouseY < 0.5) {
+        int tileX = (_mouseX - _xMin) / TILE_WIDTH;
+        int tileY = -(_mouseY - 0.5f) / TILE_HEIGHT;
+        draw_hovered_cell(_xMin + tileX * TILE_WIDTH, 0.5f - tileY * TILE_HEIGHT, TILE_WIDTH, TILE_HEIGHT);
+    }
 
-    //
+    if (_mouseX >= _xMin && _mouseX < _xMin + _mapWidth && _mouseY >= 0.5 && _mouseY < 1){
+        int cardX = (_mouseX - _xMin) / (3.0f / 5.0f);
+        draw_hovered_card(_xMin + cardX * (3.0f / 5.0f), 1.0f, 3.0f / 5.0f, 0.5f);
+    }
+
+    if (data.isCardSelected()){
+        draw_hovered_card(_xMin + data.CardSelected * (3.0f / 5.0f), 1.0f, 3.0f / 5.0f, 0.5f);
+    }
+
 
     // Without set precision
     // const std::string angle_label_text { "Angle: " + std::to_string(_angle) };
@@ -115,30 +131,33 @@ void App::mouse_button_callback(int button, int action, int mods) {
         float y = 1 - ypos / (_height / 2);
 
         std::cout << "x: " << x << " y: " << y << std::endl;
-        float x_min = -1.0f * _aspectRatio;
+
         // Détermine la partie de la fenêtre sur laquelle l'utilisateur a cliqué
-        if (x >= x_min && x < x_min+3.0 && y >= -1 && y < 0.5) { //Clique sur la map
-            //Une tuile fait 0.1 de largeur et 0.1 de hauteur
+        if (x >= _xMin && x < _xMin+ _mapWidth  && y >= -1 && y < _mapHeight -1) { //Clique sur la map
             //Calculer la tuile sur laquelle l'utilisateur a cliqué
-            int tileX = (x - x_min) / tileWidth;
-            int tileY = -(y - 0.5f) / tileHeight;
+            int tileX = static_cast<int>((x - _xMin) / TILE_WIDTH);
+            int tileY = static_cast<int>( -(y - (_mapHeight -1)) / TILE_HEIGHT);
             std::cout << "Tile clicked: (" << tileX << ", " << tileY << ")" << std::endl;
-        } else if (x >= x_min && x < x_min+3.0 && y >= 0.5 && y < 1) { //Clique sur le deck
+            data.unselectCard();
+        } else if (x >= _xMin && x < _xMin+ _mapWidth && y >= _mapHeight -1 && y < 1) { //Clique sur le deck
             std::cout << "Card" << std::endl;
             //Calculer la carte sur laquelle l'utilisateur a cliqué
-            int cardX = (x - x_min) / (3.0f / 5.0f); //a voir pour utiliser une variable pour avoir quelque chose de variable
-            std::cout << "Card clicked: " << cardX << std::endl;
+            int cardX = static_cast<int>((x - _xMin) / (_mapWidth / 5.0f)); //a voir pour utiliser une variable pour avoir quelque chose de variable
+            data.selectCard(cardX);
+            std::cout << "Card clicked: " << data.CardSelected << std::endl;
         } else { //Clique sur le menu/info (avec un else pour l'instant, à voir si on change)
             std::cout << "menu/info" << std::endl;
+            data.unselectCard();
         }
-
     }
 }
 
 void App::scroll_callback(double /*xoffset*/, double /*yoffset*/) {
 }
 
-void App::cursor_position_callback(double /*xpos*/, double /*ypos*/) {
+void App::cursor_position_callback(double xpos, double ypos) {
+    _mouseX = (xpos - _width / 2) * 2.0f / _height;
+    _mouseY = 1 - ypos / (_height / 2);
 }
 
 void App::size_callback(int width, int height) {

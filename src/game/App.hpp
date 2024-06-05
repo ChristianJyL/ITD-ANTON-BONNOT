@@ -2,6 +2,7 @@
 
 #include "glad/glad.h"
 #include <simpletext.h>
+#include "data.hpp"
 
 class App {
 public:
@@ -24,7 +25,17 @@ private:
     int _height {};
     double _previousTime {};
     float _viewSize {};
+
     float _aspectRatio {};
+    float _xMin {};
+    float _mapWidth {};
+    float _mapHeight {};
+
+
+
+    Data data;
+
+    float _mouseX, _mouseY;
 
     // Add your variables here
     GLuint _texture {};
