@@ -1,14 +1,6 @@
 #include "data.hpp"
-#include "entity/Enemy.hpp"
-#include "entity/Tower.hpp"
-#include "other/file.hpp"
-#include "model.hpp"
 
-#include <img/img.hpp>
-#include <iostream>
-#include <vector>
-#include "glm/glm.hpp"
-#include "other/utils.hpp"
+
 
 /*struct Data{
     std::vector<int> grid; // 0 = empty, 1 = path, 2 = input, 3 = output  | Liste 2D de la grille
@@ -23,18 +15,18 @@
 
 */
 
-void Data::setCell(int x, int y, int value) {
+void Data::setCell(int x, int y, TileType value) {
     grid[y * width + x] = value;
 }
 
-int Data::getCell(int x, int y) const {
+TileType Data::getCell(int x, int y) const {
     return grid[y * width + x];
 }
 
 void Data::initGrid(int width, int height) {
     this->width = width;
     this->height = height;
-    grid.resize(width * height, 0);
+    grid.resize(width * height, TileType::Empty);
 }
 
 void Data::loadFromITD(std::filesystem::path const& pathFile) {
@@ -55,11 +47,11 @@ void Data::loadFromITD(std::filesystem::path const& pathFile) {
         {
             auto const& pixel {pixels[y * image_map.width() + x]};
             if (pixel == Data::path){
-                setCell(x, convertY(y, image_map.height()), 1);
+                setCell(x, convertY(y, image_map.height()), TileType::Path);
             } else if (pixel == Data::start) {
-                setCell(x, convertY(y, image_map.height()), 2);
+                setCell(x, convertY(y, image_map.height()), TileType::Input);
             } else if (pixel == Data::end) {
-                setCell(x, convertY(y, image_map.height()), 3);
+                setCell(x, convertY(y, image_map.height()), TileType::Output);
             }
         }
     }
@@ -84,9 +76,9 @@ bool Data::isEverythingValid() const {
         int nodeIndex = node.first;
         int nodeX = node.second.first;
         int nodeY = node.second.second;
-        int gridIndex = getCell(nodeX, nodeY);
+        TileType gridIndex = getCell(nodeX, nodeY);
 
-        if (gridIndex != 1 && gridIndex != 2 && gridIndex != 3) { // on vérif si c'est un path, un input ou un output
+        if (gridIndex != TileType::Path && gridIndex != TileType::Input && gridIndex != TileType::Output) { // on vérif si c'est un path, un input ou un output
             return false;
         }
     }
@@ -104,3 +96,30 @@ void Data::selectCard(int index) {
 void Data::unselectCard() {
     CardSelected = -1;
 }
+
+bool Data::placeCard(int x, int y) {
+    if (CardSelected == -1) {
+        return false;
+    }
+    if (getCell(x, y) == TileType::Empty){
+        setCell(x, y, getCardType(CardSelected));
+        return true;
+    } else {
+        return false;
+    }
+}
+
+
+TileType Data::getCardType(int index) {
+    switch (index) {
+        case 0:
+            return TileType::TowerLongRange;
+        case 1:
+            return TileType::TowerShortRange;
+        case 2:
+            return TileType::TowerSlow;
+        default:
+            return TileType::Empty;
+    }
+}
+

@@ -14,6 +14,7 @@
 
 static const float TILE_WIDTH = 0.1;
 static const float TILE_HEIGHT = 0.1;
+static const int NB_CARDS = 3;
 
 App::App() : _previousTime(0.0), _viewSize(2.0) , _mouseX(0.0f), _mouseY(0.0f) {
     // load what needs to be loaded here (for example textures)
@@ -76,16 +77,16 @@ void App::render() {
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
-    draw_quad_with_texture(_texture);
-    draw_deck(_texture, _xMin, 1.0f, _mapWidth, _mapHeight -1, 5);
+    //draw_quad_with_texture(_texture);
+    draw_deck(_texture, _xMin, 1.0f, _mapWidth, _mapHeight -1, NB_CARDS);
 
+    draw_map(_xMin, 0.5f, TILE_WIDTH, TILE_HEIGHT, data);
     if (data.isCardSelected()){
         draw_grid_available(_xMin, 0.5f, TILE_WIDTH, TILE_HEIGHT, data);
     }
 
     draw_grid(_xMin, -1, TILE_WIDTH, TILE_HEIGHT);
 
-    
     if (_mouseX >= _xMin && _mouseX < _xMin + _mapWidth && _mouseY >= -1 && _mouseY < 0.5) {
         int tileX = (_mouseX - _xMin) / TILE_WIDTH;
         int tileY = -(_mouseY - 0.5f) / TILE_HEIGHT;
@@ -93,14 +94,13 @@ void App::render() {
     }
 
     if (_mouseX >= _xMin && _mouseX < _xMin + _mapWidth && _mouseY >= 0.5 && _mouseY < 1){
-        int cardX = (_mouseX - _xMin) / (3.0f / 5.0f);
-        draw_hovered_card(_xMin + cardX * (3.0f / 5.0f), 1.0f, 3.0f / 5.0f, 0.5f);
+        int cardX = (_mouseX - _xMin) / (3.0f / NB_CARDS);
+        draw_hovered_card(_xMin + cardX * (3.0f / NB_CARDS), 1.0f, 3.0f / NB_CARDS, 0.5f);
     }
 
     if (data.isCardSelected()){
-        draw_hovered_card(_xMin + data.CardSelected * (3.0f / 5.0f), 1.0f, 3.0f / 5.0f, 0.5f);
+        draw_hovered_card(_xMin + data.CardSelected * (3.0f / NB_CARDS), 1.0f, 3.0f /NB_CARDS, 0.5f);
     }
-
 
     // Without set precision
     // const std::string angle_label_text { "Angle: " + std::to_string(_angle) };
@@ -134,15 +134,24 @@ void App::mouse_button_callback(int button, int action, int mods) {
 
         // Détermine la partie de la fenêtre sur laquelle l'utilisateur a cliqué
         if (x >= _xMin && x < _xMin+ _mapWidth  && y >= -1 && y < _mapHeight -1) { //Clique sur la map
-            //Calculer la tuile sur laquelle l'utilisateur a cliqué
-            int tileX = static_cast<int>((x - _xMin) / TILE_WIDTH);
-            int tileY = static_cast<int>( -(y - (_mapHeight -1)) / TILE_HEIGHT);
-            std::cout << "Tile clicked: (" << tileX << ", " << tileY << ")" << std::endl;
-            data.unselectCard();
+            if (!data.isCardSelected()) {
+                //Calculer la tuile sur laquelle l'utilisateur a cliqué
+                int tileX = static_cast<int>((x - _xMin) / TILE_WIDTH);
+                int tileY = static_cast<int>( -(y - (_mapHeight - 1)) / TILE_HEIGHT);
+                std::cout << "Tile clicked: (" << tileX << ", " << tileY << ")" << std::endl;
+                data.unselectCard();
+            } else {
+                //Calculer la tuile sur laquelle l'utilisateur a cliqué
+                int tileX = static_cast<int>((x - _xMin) / TILE_WIDTH);
+                int tileY = static_cast<int>( -(y - (_mapHeight - 1)) / TILE_HEIGHT);
+                std::cout << "Tile clicked: (" << tileX << ", " << tileY << ")" << std::endl;
+                data.placeCard(tileX, tileY);
+                data.unselectCard();
+            }
         } else if (x >= _xMin && x < _xMin+ _mapWidth && y >= _mapHeight -1 && y < 1) { //Clique sur le deck
             std::cout << "Card" << std::endl;
             //Calculer la carte sur laquelle l'utilisateur a cliqué
-            int cardX = static_cast<int>((x - _xMin) / (_mapWidth / 5.0f)); //a voir pour utiliser une variable pour avoir quelque chose de variable
+            int cardX = static_cast<int>((x - _xMin) / (_mapWidth /NB_CARDS)); //a voir pour utiliser une variable pour avoir quelque chose de variable
             data.selectCard(cardX);
             std::cout << "Card clicked: " << data.CardSelected << std::endl;
         } else { //Clique sur le menu/info (avec un else pour l'instant, à voir si on change)

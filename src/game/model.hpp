@@ -15,8 +15,10 @@ void draw_one_card(GLuint textureId, float x, float y, float width, float height
 void draw_deck(GLuint textureId, float x, float y, float width, float height, int nb_cards);
 void draw_grid(float x, float y , float tileWidth, float tileHeight);
 
-void draw_cell_available(float x, float y, float tileWidth, float tileHeight);
-void draw_grid_available(float x, float y, float tileWidth, float tileHeight, Data data);
+void draw_cell(float x, float y, float tileWidth, float tileHeight, GLuint textureId =0);
+
+void draw_map(float x, float y, float tileWidth, float tileHeight, const Data& data);
+void draw_grid_available(float x, float y, float tileWidth, float tileHeight, const Data& data);
 
 
 

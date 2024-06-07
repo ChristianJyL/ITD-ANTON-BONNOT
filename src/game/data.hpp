@@ -1,19 +1,26 @@
 #pragma once
+#include <iostream>
+#include "entity/Enemy.hpp"
+#include "entity/Tower.hpp"
+
 #include <vector>
 #include "other/file.hpp"
 #include <img/img.hpp>
 #include "other/graph.hpp"
+#include "other/utils.hpp"
 
-enum class TileType {
+enum TileType {
     Empty = 0,
     Path = 1,
     Input = 2,
     Output = 3,
-    Tower = 4,
+    TowerLongRange = 4,
+    TowerShortRange = 5,
+    TowerSlow = 6,
 };
 
 struct Data{
-    std::vector<int> grid; // 0 = empty, 1 = path, 2 = input, 3 = output  | Liste 1D de la grille
+    std::vector<TileType> grid; // 0 = empty, 1 = path, 2 = input, 3 = output  | Liste 1D de la grille
     Graph::WeightedGraph graph;
     std::unordered_map<int, std::pair<int, int>> coordNodes;
 
@@ -26,8 +33,8 @@ struct Data{
     int CardSelected = -1;
 
 
-    int  getCell(int x, int y) const; // Récupère la valeur de la cellule à la position (x, y)
-    void setCell(int x, int y, int value) ; // Modifie la valeur de la cellule à la position (x, y)
+    TileType  getCell(int x, int y) const; // Récupère la valeur de la cellule à la position (x, y)
+    void setCell(int x, int y, TileType value) ; // Modifie la valeur de la cellule à la position (x, y)
     void loadFromITD(std::filesystem::path const& pathFile) ; // Charge les données à partir d'un fichier ITD
     void initGrid(int width, int height) ; // Initialise la grille avec des cases vides
     void printGrid() const; // Affiche la grille
@@ -35,6 +42,8 @@ struct Data{
     bool isCardSelected() const; // Vérifie si une carte est sélectionnée
     void selectCard(int index); // Sélectionne une carte
     void unselectCard(); // Désélectionne une carte
+    bool placeCard(int x, int y); // Place une carte sur la grille
+    TileType getCardType(int index); // Récupère le type de la carte à l'index donné
 };
 
 

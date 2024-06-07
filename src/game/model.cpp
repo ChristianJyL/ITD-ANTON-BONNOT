@@ -94,23 +94,61 @@ void draw_grid(float x, float y, float tileWidth, float tileHeight){ //fonction 
     glEnd();
 }
 
-void draw_cell_available(float x, float y, float tileWidth, float tileHeight){
-    glColor3f(0.0f, 1.0f, 0.0f);
+void draw_cell(float x, float y, float tileWidth, float tileHeight, GLuint textureId){
+    //glEnable(GL_TEXTURE_2D);
+    //glBindTexture(GL_TEXTURE_2D, textureId);
     glBegin(GL_QUADS);
         glVertex2f(x, y);
         glVertex2f(x + tileWidth, y);
         glVertex2f(x + tileWidth, y - tileHeight);
         glVertex2f(x, y - tileHeight);
     glEnd();
+    //glBindTexture(GL_TEXTURE_2D, 0);
+    //glDisable(GL_TEXTURE_2D);
 }
 
-void draw_grid_available(float x, float y, float tileWidth, float tileHeight, Data data){
+void draw_map(float x, float y, float tileWidth, float tileHeight, const Data& data){ //Dessine la map en fonction de la grille de data (remplacer les couleurs avec les textures à terme)
+    for (int j = data.height -1; j >= 0; --j)
+    {
+        for (unsigned int i = 0; i < data.width; ++i)
+        {
+            switch (data.getCell(i,j))
+            {
+            case 1:
+                glColor3f(data.path.r / 255.0f, data.path.g / 255.0f, data.path.b / 255.0f);
+                break;
+            case 2:
+                glColor3f(data.start.r / 255.0f, data.start.g / 255.0f, data.start.b / 255.0f);
+                break;
+            case 3:
+                glColor3f(data.end.r / 255.0f, data.end.g / 255.0f, data.end.b / 255.0f);
+                break;
+            case 4:
+                glColor3f(1.0f, 0.8f, 0.0f);
+                break;
+            case 5:
+                glColor3f(1.0f, 0.5f, 0.0f);
+                break;
+            case 6:
+                glColor3f(1.0f, 0.1f, 0.0f);
+                break;
+            default:
+                glColor3f(0.0f, 0.0f, 0.0f);
+                break;
+            }
+            draw_cell(x + i * tileWidth, y - j * tileHeight, tileWidth, tileHeight);
+        }
+    }
+}
+
+void draw_grid_available(float x, float y, float tileWidth, float tileHeight, const Data& data){
+    glColor3f(0.0f, 1.0f, 0.0f);
     for (int j = data.height -1; j >= 0; --j)
     {
         for (unsigned int i = 0; i < data.width; ++i)
         {
             if(data.getCell(i,j) == 0){
-                draw_cell_available(x + i * tileWidth, y - j * tileHeight, tileWidth, tileHeight);
+                draw_cell(x + i * tileWidth, y - j * tileHeight, tileWidth, tileHeight);
             }
         }
     }

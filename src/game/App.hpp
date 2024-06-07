@@ -31,8 +31,6 @@ private:
     float _mapWidth {};
     float _mapHeight {};
 
-
-
     Data data;
 
     float _mouseX, _mouseY;
