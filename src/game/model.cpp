@@ -175,3 +175,20 @@ void draw_hovered_card(float x, float y, float width, float height){
     glVertex2f(x, y - height);
     glEnd();
 }
+
+void draw_enemy(float x, float y, float size){
+    glColor3f(0.80f, 0.0f, 0.9f);
+    glBegin(GL_TRIANGLES);
+    glVertex2f(x, y);
+    glVertex2f(x + size, y);
+    glVertex2f(x + size / 2, y - size);
+    glEnd();
+}
+
+void draw_enemies(float xOrigin, double yOrigin, std::vector<Enemy> enemies, float size){
+    for(auto& enemy : enemies){
+        //std::cout << "x: " << enemy.x << " y: " << enemy.y << std::endl;
+        draw_enemy(xOrigin + enemy.x * 0.1, yOrigin- enemy.y * 0.1, size);
+    }
+}
+

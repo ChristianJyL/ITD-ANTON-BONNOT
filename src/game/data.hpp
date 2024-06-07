@@ -21,17 +21,18 @@ enum TileType {
 
 struct Data{
     std::vector<TileType> grid; // 0 = empty, 1 = path, 2 = input, 3 = output  | Liste 1D de la grille
+    std::vector<Enemy> enemies;
     Graph::WeightedGraph graph;
     std::unordered_map<int, std::pair<int, int>> coordNodes;
+    std::vector<int> entries;
+    int exit;
 
     int width; // Largeur de la grille
     int height; // Hauteur de la grille
     glm::u8vec3 start; // Couleur du début du chemin
     glm::u8vec3 end; // Couleur de la fin du chemin
     glm::u8vec3 path; // Couleur du chemin
-
     int CardSelected = -1;
-
 
     TileType  getCell(int x, int y) const; // Récupère la valeur de la cellule à la position (x, y)
     void setCell(int x, int y, TileType value) ; // Modifie la valeur de la cellule à la position (x, y)
@@ -44,6 +45,14 @@ struct Data{
     void unselectCard(); // Désélectionne une carte
     bool placeCard(int x, int y); // Place une carte sur la grille
     TileType getCardType(int index); // Récupère le type de la carte à l'index donné
+    int getNodeWithCoord(int x, int y); // Récupère le noeud à la position (x, y)
+    std::pair<int,int> getCoordWithNode(int node); // Récupère les coordonnées du noeud donné
+    std::vector<int> getShortestPath(); // Récupère le chemin le plus court
+
+    void addEnemy(Enemy enemy); // Ajoute un ennemi
+    std::vector<Enemy> getEnemies() const; // Récupère la liste des ennemis
+    void moveEnemy(Enemy &enemy, std::vector<int> const& pathList, float time); // Déplace un ennemi
+    void moveEnemies(float time); // Déplace tous les ennemis
 };
 
 

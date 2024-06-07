@@ -21,9 +21,13 @@ App::App() : _previousTime(0.0), _viewSize(2.0) , _mouseX(0.0f), _mouseY(0.0f) {
     img::Image image_map = {img::load(make_absolute_path("images/map2.png", true), 3, true)};
     img::Image image_deck = {img::load(make_absolute_path("images/level.png", true), 3, true)};
     data.loadFromITD("data/map.itd");
+    std::cout << data.getShortestPath() << std::endl;
+
     _texture = loadTexture(image_map);
     _mapWidth = static_cast<float>(image_map.width()) /10.0f;
     _mapHeight = static_cast<float>(image_map.height()) /10.0f;
+    data.addEnemy({13,4,0,1,0});    data.addEnemy({13,4,0,2,0});    data.addEnemy({13,4,0,1.5,0});    data.addEnemy({13,4,0,0.5f,0});
+
 
     // Afficher grid
     std::cout<<"Grid: " << std::endl;
@@ -65,9 +69,14 @@ void App::update() {
     const double elapsedTime { currentTime - _previousTime};
     _previousTime = currentTime;
 
+
+
+
+    data.moveEnemies(elapsedTime);
+
+
     _angle += 10.0f * elapsedTime;
     // _angle = std::fmod(_angle, 360.0f);
-
     render();
 }
 
@@ -81,6 +90,7 @@ void App::render() {
     draw_deck(_texture, _xMin, 1.0f, _mapWidth, _mapHeight -1, NB_CARDS);
 
     draw_map(_xMin, 0.5f, TILE_WIDTH, TILE_HEIGHT, data);
+    draw_enemies( _xMin, _mapHeight -1, data.enemies, 0.1);
     if (data.isCardSelected()){
         draw_grid_available(_xMin, 0.5f, TILE_WIDTH, TILE_HEIGHT, data);
     }

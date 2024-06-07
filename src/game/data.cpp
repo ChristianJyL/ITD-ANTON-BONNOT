@@ -41,6 +41,9 @@ void Data::loadFromITD(std::filesystem::path const& pathFile) {
     img::Image image_map = {img::load(make_absolute_path("images/" + itd.map , true), 3, true)};
     std::vector<glm::u8vec3> pixels {pixels_as_vec3(image_map)};
     initGrid(image_map.width(), image_map.height());
+    graph = Graph::build_from_adjacency_list(itd.list_adjacency);
+    coordNodes = getCoord(itd.list_adjacency);
+
     for (int y = 0; y < image_map.height(); ++y)
     {
         for (unsigned int x = 0; x < image_map.width(); ++x)
@@ -50,14 +53,21 @@ void Data::loadFromITD(std::filesystem::path const& pathFile) {
                 setCell(x, convertY(y, image_map.height()), TileType::Path);
             } else if (pixel == Data::start) {
                 setCell(x, convertY(y, image_map.height()), TileType::Input);
+                int nodeIndex = getNodeWithCoord(x, convertY(y, image_map.height()));
+                if (nodeIndex != -1) {
+                    entries.push_back(nodeIndex);
+                } else {
+                    throw std::runtime_error{"Invalid ITD file"};
+                }
             } else if (pixel == Data::end) {
                 setCell(x, convertY(y, image_map.height()), TileType::Output);
+                exit = getNodeWithCoord(x, convertY(y, image_map.height()));
+                if (exit == -1) {
+                    throw std::runtime_error{"Invalid ITD file"};
+                }
             }
         }
     }
-
-    graph = Graph::build_from_adjacency_list(itd.list_adjacency);
-    coordNodes = getCoord(itd.list_adjacency);
 }
 
 void Data::printGrid() const {
@@ -77,7 +87,6 @@ bool Data::isEverythingValid() const {
         int nodeX = node.second.first;
         int nodeY = node.second.second;
         TileType gridIndex = getCell(nodeX, nodeY);
-
         if (gridIndex != TileType::Path && gridIndex != TileType::Input && gridIndex != TileType::Output) { // on vérif si c'est un path, un input ou un output
             return false;
         }
@@ -123,3 +132,75 @@ TileType Data::getCardType(int index) {
     }
 }
 
+void Data::addEnemy(Enemy enemy) {
+    enemies.push_back(enemy);
+}
+
+int Data::getNodeWithCoord(int x, int y) {
+    for (const auto& node : coordNodes) {
+        if (node.second.first == x && node.second.second == y) {
+            return node.first;
+        }
+    }
+    return -1;
+}
+
+std::pair<int,int> Data::getCoordWithNode(int node) {
+    return coordNodes[node];
+}
+
+std::vector<int> Data::getShortestPath(){
+    std::unordered_map<int, std::pair<float, int>> dijkstraTemp;
+    std::unordered_map<int, std::pair<float, int>> dijkstraResult;
+    int minDistance {0};
+    int minNode {0};
+    for (int entry : entries){
+        dijkstraTemp = dijkstra(graph,entry, exit);
+        if (minDistance == 0 || dijkstraResult[exit].first < minDistance){
+            minDistance = dijkstraTemp[exit].first;
+            minNode = entry;
+            dijkstraResult = dijkstraTemp;
+        }
+    }
+    std::vector<int> path;
+    int currentNode = exit;
+    while (currentNode != minNode){
+        path.push_back(currentNode);
+        currentNode = dijkstraResult[currentNode].second;
+    }
+    path.push_back(minNode);
+    std::reverse(path.begin(), path.end());
+    return path;
+}
+
+void Data::moveEnemy(Enemy &enemy, std::vector<int> const& pathList, float time) {
+    std::pair<int, int> nextStepCoords = coordNodes[pathList[enemy.currentPathIndex + 1]]; //on va chercher les coordonnées du prochain noeud
+
+    // vecteur normalisé pour uniquement la direction
+    float length = std::sqrt(std::pow(nextStepCoords.first - enemy.x, 2) + std::pow(nextStepCoords.second - enemy.y, 2));
+    float directionX = (nextStepCoords.first - enemy.x) / length;
+    float directionY = (nextStepCoords.second - enemy.y) / length;
+
+
+    //on déplace l'ennemi selon la direction et la vitesse
+    enemy.moveX(directionX * enemy.speed * time);
+    enemy.moveY(directionY * enemy.speed * time);
+
+    //distance entre l'ennemi et le prochain noeud comme dans le workshop
+    if (glm::distance(glm::vec2(enemy.x, enemy.y), glm::vec2(nextStepCoords.first, nextStepCoords.second)) < 0.03f) { //0.03f = tolérance pour pas que l'ennemi se tp d'une case à l'autre à la fin
+        enemy.currentPathIndex++;
+        enemy.x = nextStepCoords.first;
+        enemy.y = nextStepCoords.second;
+    }
+
+    if (enemy.currentPathIndex == pathList.size() - 1) {
+        enemies.erase(std::remove(enemies.begin(), enemies.end(), enemy), enemies.end());  // L'ennemi a atteint la fin du chemin -> Supprimez l'ennemi
+    }
+}
+
+void Data::moveEnemies(float time) { //on bouge tous les ennemis
+    std::vector<int> pathList = getShortestPath();
+    for (Enemy &enemy : enemies) {
+        moveEnemy(enemy, pathList, time);
+    }
+}

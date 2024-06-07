@@ -3,6 +3,7 @@
 #include <img/img.hpp>
 #include <vector>
 #include "glad/glad.h"
+#include "other/utils.hpp"
 #include "data.hpp"
 #include <iostream>
 
@@ -20,7 +21,8 @@ void draw_cell(float x, float y, float tileWidth, float tileHeight, GLuint textu
 void draw_map(float x, float y, float tileWidth, float tileHeight, const Data& data);
 void draw_grid_available(float x, float y, float tileWidth, float tileHeight, const Data& data);
 
-
-
 void draw_hovered_cell(float x, float y, float width, float height);
 void draw_hovered_card(float x, float y, float width, float height);
+
+void draw_enemy(float x, float y, float size);
+void draw_enemies(float xOrigin, double yOrigin, std::vector<Enemy> enemies, float size);
