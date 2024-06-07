@@ -36,6 +36,7 @@ namespace Graph {
 
     WeightedGraph build_from_adjacency_list(std::vector<Node> const& adjacency_list);
 
+    std::unordered_map<int, std::pair<float, int>> dijkstra(WeightedGraph const& graph, int const& start, int const end);
 
 } // namespace
 
