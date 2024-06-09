@@ -196,25 +196,25 @@ void draw_hovered_card(float xOrigin, float yOrigin, float width, float height){
     glPopMatrix();
 }
 
-void draw_enemy(float xOrigin, float yOrigin, float size){
-    glPushMatrix();
-        glTranslatef(xOrigin, yOrigin, 0);
-        glColor3f(0.80f, 0.0f, 0.9f);
-        glBegin(GL_TRIANGLES);
-            glVertex2f(0, 0);
-            glVertex2f(size, 0);
-            glVertex2f(size / 2, -size);
-        glEnd();
-    glPopMatrix();
-}
-
 void draw_enemies(float xOrigin, double yOrigin, std::vector<Enemy> enemies, float size){
     glPushMatrix();
     glTranslatef(xOrigin, yOrigin, 0);
-    for(auto& enemy : enemies){
+    for(Enemy const& enemy : enemies){
         //std::cout << "x: " << enemy.x << " y: " << enemy.y << std::endl;
-        draw_enemy(enemy.x * 0.1, - enemy.y * 0.1, size);
+        enemy.draw_enemy(0.1 , size);
     }
     glPopMatrix();
 }
+
+
+void draw_projectiles(float xOrigin, float yOrigin, const std::vector<Projectile>& projectiles, float size){
+    glPushMatrix();
+    glTranslatef(xOrigin, yOrigin, 0);
+    for(Projectile const& projectile : projectiles){
+        projectile.draw_projectile(0.1, size);
+    }
+    glPopMatrix();
+}
+
+
 

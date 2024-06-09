@@ -26,7 +26,7 @@ App::App() : _previousTime(0.0), _viewSize(2.0) , _mouseX(0.0f), _mouseY(0.0f) {
     _texture = loadTexture(image_map);
     _mapWidth = static_cast<float>(image_map.width()) /10.0f;
     _mapHeight = static_cast<float>(image_map.height()) /10.0f;
-    data.addEnemy({13,4,0,1,0});    data.addEnemy({13,4,0,2,0});    data.addEnemy({13,4,0,1.5,0});    data.addEnemy({13,4,0,0.5f,0});
+    //data.addEnemy({13,4,0,1,0});    data.addEnemy({13,4,0,2,0});    data.addEnemy({13,4,0,1.5,0});    data.addEnemy({13,4,0,0.5f,0});
 
 
     // Afficher grid
@@ -60,24 +60,28 @@ void App::setup() {
     _aspectRatio = (float)_width / (float)_height;
     _xMin = -1.0f * _aspectRatio;
 
-
 }
 
 void App::update() {
-
     const double currentTime { glfwGetTime() };
     const double elapsedTime { currentTime - _previousTime};
     _previousTime = currentTime;
+    static double lastTime = 0.0;
 
-
-
-
+    if (currentTime - lastTime > 1.0) {
+        lastTime = currentTime;
+        data.addEnemy(Enemy(13,4,15,1,0));
+    }
     data.moveEnemies(elapsedTime);
+    data.moveProjectiles(elapsedTime);
+    data.attackEnemies(currentTime);
 
-
-    _angle += 10.0f * elapsedTime;
-    // _angle = std::fmod(_angle, 360.0f);
     render();
+
+
+    //_angle += 10.0f * elapsedTime;
+    // _angle = std::fmod(_angle, 360.0f);
+
 }
 
 void App::render() {
@@ -91,9 +95,13 @@ void App::render() {
 
     draw_map(_xMin, 0.5f, TILE_WIDTH, TILE_HEIGHT, data);
     draw_enemies( _xMin, _mapHeight -1, data.enemies, 0.1);
+
+    draw_projectiles(_xMin, _mapHeight -1, data.projectiles, 10);
+
     if (data.isCardSelected()){
         draw_grid_available(_xMin, 0.5f, TILE_WIDTH, TILE_HEIGHT, data);
     }
+
 
     draw_grid(_xMin, -1, TILE_WIDTH, TILE_HEIGHT);
 
@@ -109,7 +117,7 @@ void App::render() {
     }
 
     if (data.isCardSelected()){
-        draw_hovered_card(_xMin + data.CardSelected * (3.0f / NB_CARDS), 1.0f, 3.0f /NB_CARDS, 0.5f);
+        draw_hovered_card(_xMin + data.cardSelected * (3.0f / NB_CARDS), 1.0f, 3.0f /NB_CARDS, 0.5f);
     }
 
     // Without set precision
@@ -156,6 +164,7 @@ void App::mouse_button_callback(int button, int action, int mods) {
                 int tileY = static_cast<int>( -(y - (_mapHeight - 1)) / TILE_HEIGHT);
                 std::cout << "Tile clicked: (" << tileX << ", " << tileY << ")" << std::endl;
                 data.placeCard(tileX, tileY);
+                data.addTower(tileX, tileY, data.cardSelected);
                 data.unselectCard();
             }
         } else if (x >= _xMin && x < _xMin+ _mapWidth && y >= _mapHeight -1 && y < 1) { //Clique sur le deck
@@ -163,7 +172,7 @@ void App::mouse_button_callback(int button, int action, int mods) {
             //Calculer la carte sur laquelle l'utilisateur a cliqué
             int cardX = static_cast<int>((x - _xMin) / (_mapWidth /NB_CARDS)); //a voir pour utiliser une variable pour avoir quelque chose de variable
             data.selectCard(cardX);
-            std::cout << "Card clicked: " << data.CardSelected << std::endl;
+            std::cout << "Card clicked: " << data.cardSelected << std::endl;
         } else { //Clique sur le menu/info (avec un else pour l'instant, à voir si on change)
             std::cout << "menu/info" << std::endl;
             data.unselectCard();

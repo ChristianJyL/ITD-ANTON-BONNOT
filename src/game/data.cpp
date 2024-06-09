@@ -1,5 +1,6 @@
 #include "data.hpp"
 
+
 /*struct Data{
     std::vector<int> grid; // 0 = empty, 1 = path, 2 = input, 3 = output  | Liste 2D de la grille
     Graph::WeightedGraph graph;
@@ -92,23 +93,23 @@ bool Data::isEverythingValid() const {
 }
 
 bool Data::isCardSelected() const {
-    return CardSelected != -1;
+    return cardSelected != -1;
 }
 
 void Data::selectCard(int index) {
-    CardSelected = index;
+    cardSelected = index;
 }
 
 void Data::unselectCard() {
-    CardSelected = -1;
+    cardSelected = -1;
 }
 
 bool Data::placeCard(int x, int y) {
-    if (CardSelected == -1) {
+    if (cardSelected == -1) {
         return false;
     }
     if (getCell(x, y) == TileType::Empty){
-        setCell(x, y, getCardType(CardSelected));
+        setCell(x, y, getCardType(cardSelected));
         return true;
     } else {
         return false;
@@ -126,6 +127,40 @@ TileType Data::getCardType(int index) {
             return TileType::TowerSlow;
         default:
             return TileType::Empty;
+    }
+}
+
+void Data::addTowerLongRange(int x, int y) {
+    Tower tower(x, y, 3, 5, 2);
+    towers.push_back(tower);
+}
+
+void Data::addTowerShortRange(int x, int y) {
+    Tower tower(x, y, 10, 2, 1);
+    towers.push_back(tower);
+}
+
+void Data::addTowerSlow(int x, int y) {
+    Tower tower(x, y, 6, 1, 3);
+    towers.push_back(tower);
+}
+
+void Data::addTower(int x , int y, int cardSelected) {
+    if (cardSelected == -1) {
+        return;
+    }
+    switch (cardSelected) {
+        case 0:
+            addTowerSlow(x, y);
+            break;
+        case 1:
+            addTowerShortRange(x, y);
+            break;
+        case 2:
+            addTowerLongRange(x, y);
+            break;
+        default:
+            break;
     }
 }
 
@@ -190,14 +225,40 @@ void Data::moveEnemy(Enemy &enemy, std::vector<int> const& pathList, float time)
         enemy.y = nextStepCoords.second;
     }
 
-    if (enemy.currentPathIndex == pathList.size() - 1) {
+    if (enemy.currentPathIndex == pathList.size() - 1) { // a changer l'action ici (l'ennemi ne meurt pas mais c'est gameover)
         enemies.erase(std::remove(enemies.begin(), enemies.end(), enemy), enemies.end());  // L'ennemi a atteint la fin du chemin -> Supprimez l'ennemi
     }
 }
 
+void Data::killEnemy(Enemy const& enemy) {
+    enemies.erase(std::remove(enemies.begin(), enemies.end(), enemy), enemies.end());
+}
+
 void Data::moveEnemies(float time) { //on bouge tous les ennemis
     std::vector<int> pathList = getShortestPath();
-    for (Enemy &enemy : enemies) {
+    for (Enemy &enemy: enemies) {
         moveEnemy(enemy, pathList, time);
+        if (enemy.hp <= 0) {
+            killEnemy(enemy);
+        }
     }
+}
+
+void Data::attackEnemies(float currentTime){
+    for (Tower &tower : towers) {
+        tower.attack(enemies, currentTime, projectiles);
+    }
+}
+
+void Data::moveProjectiles(float time) {
+    for (Projectile &projectile : projectiles) {
+        projectile.move(time);
+        if (projectile.isArrived()) {
+            killProjectile(projectile);
+        }
+    }
+}
+
+void Data::killProjectile(Projectile const& projectile) {
+    projectiles.erase(std::remove(projectiles.begin(), projectiles.end(), projectile), projectiles.end());
 }

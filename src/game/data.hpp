@@ -8,6 +8,7 @@
 #include <img/img.hpp>
 #include "other/graph.hpp"
 #include "other/utils.hpp"
+#include "entity/Projectile.hpp"
 
 enum TileType {
     Empty = 0,
@@ -22,6 +23,8 @@ enum TileType {
 struct Data{
     std::vector<TileType> grid; // 0 = empty, 1 = path, 2 = input, 3 = output  | Liste 1D de la grille
     std::vector<Enemy> enemies;
+    std::vector<Tower> towers;
+    std::vector<Projectile> projectiles;
     Graph::WeightedGraph graph;
     std::unordered_map<int, std::pair<int, int>> coordNodes;
     std::vector<int> entries;
@@ -32,7 +35,9 @@ struct Data{
     glm::u8vec3 start; // Couleur du début du chemin
     glm::u8vec3 end; // Couleur de la fin du chemin
     glm::u8vec3 path; // Couleur du chemin
-    int CardSelected = -1;
+    int cardSelected = -1;
+
+    bool isAlive = true;
 
     TileType  getCell(int x, int y) const; // Récupère la valeur de la cellule à la position (x, y)
     void setCell(int x, int y, TileType value) ; // Modifie la valeur de la cellule à la position (x, y)
@@ -49,10 +54,24 @@ struct Data{
     std::pair<int,int> getCoordWithNode(int node); // Récupère les coordonnées du noeud donné
     std::vector<int> getShortestPath(); // Récupère le chemin le plus court
 
+    void addTower(int x, int y , int cardSelected); // Ajoute une tour
+    void addTowerLongRange(int x,int y);
+    void addTowerShortRange(int x,int y);
+    void addTowerSlow(int x, int y);
+
     void addEnemy(Enemy enemy); // Ajoute un ennemi
-    std::vector<Enemy> getEnemies() const; // Récupère la liste des ennemis
+    void killEnemy(Enemy const& enemy); // Tue un ennemi
     void moveEnemy(Enemy &enemy, std::vector<int> const& pathList, float time); // Déplace un ennemi
     void moveEnemies(float time); // Déplace tous les ennemis
+
+    void attackEnemies(float currentTime); // Attaque les ennemis
+
+
+
+
+    void moveProjectiles(float time);
+
+    void killProjectile(const Projectile &projectile);
 };
 
 
