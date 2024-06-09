@@ -1,7 +1,5 @@
 #include "data.hpp"
 
-
-
 /*struct Data{
     std::vector<int> grid; // 0 = empty, 1 = path, 2 = input, 3 = output  | Liste 2D de la grille
     Graph::WeightedGraph graph;
@@ -12,7 +10,6 @@
     glm::u8vec3 start; // Couleur du début du chemin
     glm::u8vec3 end; // Couleur de la fin du chemin
     glm::u8vec3 path; // Couleur du chemin
-
 */
 
 void Data::setCell(int x, int y, TileType value) {

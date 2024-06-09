@@ -49,65 +49,75 @@ void draw_quad_with_texture(GLuint textureId) {
     glDisable(GL_TEXTURE_2D);
 }
 
-void draw_one_card(GLuint textureId, float x, float y, float width, float height){
+void draw_one_card(GLuint textureId, float xOrigin, float yOrigin, float width, float height){
     //glEnable(GL_TEXTURE_2D);
     //glBindTexture(GL_TEXTURE_2D, textureId);
+    glPushMatrix();
+    glTranslatef(xOrigin, yOrigin, 0);
     glBegin(GL_QUADS);
         glTexCoord2d(0,0);
-        glVertex2f(x, y);
+        glVertex2f(0, 0);
 
         glTexCoord2d(1,0);
-        glVertex2f(x+width, y);
+        glVertex2f(width, 0);
 
         glTexCoord2d(1,1);
-        glVertex2f(x+width, y-height);
+        glVertex2f(width, -height);
 
         glTexCoord2d(0,1);
-        glVertex2f(x, y-height);
+        glVertex2f(0, -height);
     glEnd();
+    glPopMatrix();
     //glBindTexture(GL_TEXTURE_2D, 0);
     //glDisable(GL_TEXTURE_2D);
 
 }
 
-void draw_deck(GLuint textureId, float x, float y, float width, float height, int nb_cards){ //mettre un vecteur de GLuint à terme pour les textures
+void draw_deck(GLuint textureId, float xOrigin, float yOrigin, float width, float height, int nb_cards){ //mettre un vecteur de GLuint à terme pour les textures
+    glPushMatrix();
+    glTranslatef(xOrigin, yOrigin, 0);
     float increment = width / nb_cards;
-    float card_width = width / nb_cards;
     for(int i = 0; i < nb_cards; i++){
         glColor3f(1.0f, i%2, 1.0f - i * 0.1f);
-        draw_one_card(textureId, x + i * increment, y, card_width, height);
+        draw_one_card(textureId, i * increment, 0, increment, height);
     }
+    glPopMatrix();
 }
 
-void draw_grid(float x, float y, float tileWidth, float tileHeight){ //fonction d'aide pour voir la grille (à revoir parce que valeur brute pour l'instant)
+void draw_grid(float xOrigin, float yOrigin, float tileWidth, float tileHeight){ //fonction d'aide pour voir la grille (à revoir parce que valeur brute pour l'instant)
     glColor3f(1.0f, 1.0f, 1.0f);
 
     glBegin(GL_LINES);
     for(int i = 0; i < 30; i++){
-        glVertex2f(x + i * tileWidth, y);
-        glVertex2f(x + i * tileWidth, y + 1.5);
+        glVertex2f(xOrigin + i * tileWidth, yOrigin);
+        glVertex2f(xOrigin + i * tileWidth, yOrigin + 1.5);
     }
     for(int i = 0; i < 15; i++){
-        glVertex2f(x, y + i * tileHeight);
-        glVertex2f(x + 3.0f, y + i * tileHeight);
+        glVertex2f(xOrigin, yOrigin + i * tileHeight);
+        glVertex2f(xOrigin + 3.0f, yOrigin + i * tileHeight);
     }
     glEnd();
 }
 
-void draw_cell(float x, float y, float tileWidth, float tileHeight, GLuint textureId){
+void draw_cell(float xOrigin, float yOrigin, float tileWidth, float tileHeight, GLuint textureId){
     //glEnable(GL_TEXTURE_2D);
     //glBindTexture(GL_TEXTURE_2D, textureId);
-    glBegin(GL_QUADS);
-        glVertex2f(x, y);
-        glVertex2f(x + tileWidth, y);
-        glVertex2f(x + tileWidth, y - tileHeight);
-        glVertex2f(x, y - tileHeight);
-    glEnd();
+    glPushMatrix();
+        glTranslatef(xOrigin, yOrigin, 0);
+        glBegin(GL_QUADS);
+            glVertex2f(0, 0);
+            glVertex2f(tileWidth, 0);
+            glVertex2f(tileWidth, -tileHeight);
+            glVertex2f(0, -tileHeight);
+        glEnd();
+    glPopMatrix();
     //glBindTexture(GL_TEXTURE_2D, 0);
     //glDisable(GL_TEXTURE_2D);
 }
 
 void draw_map(float x, float y, float tileWidth, float tileHeight, const Data& data){ //Dessine la map en fonction de la grille de data (remplacer les couleurs avec les textures à terme)
+    glPushMatrix();
+    glTranslatef(x, y, 0);
     for (int j = data.height -1; j >= 0; --j)
     {
         for (unsigned int i = 0; i < data.width; ++i)
@@ -136,59 +146,75 @@ void draw_map(float x, float y, float tileWidth, float tileHeight, const Data& d
                 glColor3f(0.0f, 0.0f, 0.0f);
                 break;
             }
-            draw_cell(x + i * tileWidth, y - j * tileHeight, tileWidth, tileHeight);
+            draw_cell(i * tileWidth, - j * tileHeight, tileWidth, tileHeight);
         }
     }
+    glPopMatrix();
 }
 
-void draw_grid_available(float x, float y, float tileWidth, float tileHeight, const Data& data){
+void draw_grid_available(float xOrigin, float yOrigin, float tileWidth, float tileHeight, const Data& data){
+    glPushMatrix();
+    glTranslatef(xOrigin, yOrigin, 0);
     glColor3f(0.0f, 1.0f, 0.0f);
     for (int j = data.height -1; j >= 0; --j)
     {
         for (unsigned int i = 0; i < data.width; ++i)
         {
             if(data.getCell(i,j) == 0){
-                draw_cell(x + i * tileWidth, y - j * tileHeight, tileWidth, tileHeight);
+                draw_cell( i * tileWidth, -j * tileHeight, tileWidth, tileHeight);
             }
         }
     }
+    glPopMatrix();
 }
 
-void draw_hovered_cell(float x, float y, float width, float height) {
+void draw_hovered_cell(float xOrigin, float yOrigin, float width, float height) {
+    glPushMatrix();
+    glTranslatef(xOrigin, yOrigin, 0);
     glColor3f(1.0f, 0.0f, 0.0f);
     glLineWidth(2.0f); // Épaisseur de la ligne
     glBegin(GL_LINE_LOOP);
-    glVertex2f(x, y);
-    glVertex2f(x + width, y);
-    glVertex2f(x + width, y - height);
-    glVertex2f(x, y - height);
+    glVertex2f(0, 0);
+    glVertex2f( width, 0);
+    glVertex2f( width, - height);
+    glVertex2f(0, - height);
     glEnd();
+    glPopMatrix();
 }
 
-void draw_hovered_card(float x, float y, float width, float height){
-    glColor3f(1.0f, 0.0f, 0.0f);
-    glLineWidth(2.0f); // Épaisseur de la ligne
-    glBegin(GL_LINE_LOOP);
-    glVertex2f(x, y);
-    glVertex2f(x + width, y);
-    glVertex2f(x + width, y - height);
-    glVertex2f(x, y - height);
-    glEnd();
+void draw_hovered_card(float xOrigin, float yOrigin, float width, float height){
+    glPushMatrix();
+        glTranslatef(xOrigin, yOrigin, 0);
+        glColor3f(1.0f, 0.0f, 0.0f);
+        glLineWidth(2.0f); // Épaisseur de la ligne
+        glBegin(GL_LINE_LOOP);
+            glVertex2f(0, 0);
+            glVertex2f(width, 0);
+            glVertex2f(width, - height);
+            glVertex2f( 0,  - height);
+        glEnd();
+    glPopMatrix();
 }
 
-void draw_enemy(float x, float y, float size){
-    glColor3f(0.80f, 0.0f, 0.9f);
-    glBegin(GL_TRIANGLES);
-    glVertex2f(x, y);
-    glVertex2f(x + size, y);
-    glVertex2f(x + size / 2, y - size);
-    glEnd();
+void draw_enemy(float xOrigin, float yOrigin, float size){
+    glPushMatrix();
+        glTranslatef(xOrigin, yOrigin, 0);
+        glColor3f(0.80f, 0.0f, 0.9f);
+        glBegin(GL_TRIANGLES);
+            glVertex2f(0, 0);
+            glVertex2f(size, 0);
+            glVertex2f(size / 2, -size);
+        glEnd();
+    glPopMatrix();
 }
 
 void draw_enemies(float xOrigin, double yOrigin, std::vector<Enemy> enemies, float size){
+    glPushMatrix();
+    glTranslatef(xOrigin, yOrigin, 0);
     for(auto& enemy : enemies){
         //std::cout << "x: " << enemy.x << " y: " << enemy.y << std::endl;
-        draw_enemy(xOrigin + enemy.x * 0.1, yOrigin- enemy.y * 0.1, size);
+        draw_enemy(enemy.x * 0.1, - enemy.y * 0.1, size);
     }
+    glPopMatrix();
 }
 
