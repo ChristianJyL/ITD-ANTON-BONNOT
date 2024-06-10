@@ -91,7 +91,7 @@ void App::render() {
     glLoadIdentity();
 
     //draw_quad_with_texture(_texture);
-    draw_deck(_texture, _xMin, 1.0f, _mapWidth, _mapHeight -1, NB_CARDS);
+
 
     draw_map(_xMin, 0.5f, TILE_WIDTH, TILE_HEIGHT, data);
     draw_enemies( _xMin, _mapHeight -1, data.enemies, 0.1);
@@ -109,7 +109,14 @@ void App::render() {
         int tileX = (_mouseX - _xMin) / TILE_WIDTH;
         int tileY = -(_mouseY - 0.5f) / TILE_HEIGHT;
         draw_hovered_cell(_xMin + tileX * TILE_WIDTH, 0.5f - tileY * TILE_HEIGHT, TILE_WIDTH, TILE_HEIGHT);
+
+        if (data.isCardSelected()){
+            int Range = getTowerRange(data.cardSelected);
+            draw_hovered_tower(_xMin + tileX * TILE_WIDTH, 0.5f - tileY * TILE_HEIGHT, TILE_WIDTH, TILE_HEIGHT, Range);
+        }
     }
+
+    draw_deck(_texture, _xMin, 1.0f, _mapWidth, _mapHeight -1, NB_CARDS);
 
     if (_mouseX >= _xMin && _mouseX < _xMin + _mapWidth && _mouseY >= 0.5 && _mouseY < 1){
         int cardX = (_mouseX - _xMin) / (3.0f / NB_CARDS);
@@ -119,6 +126,7 @@ void App::render() {
     if (data.isCardSelected()){
         draw_hovered_card(_xMin + data.cardSelected * (3.0f / NB_CARDS), 1.0f, 3.0f /NB_CARDS, 0.5f);
     }
+
 
     // Without set precision
     // const std::string angle_label_text { "Angle: " + std::to_string(_angle) };
@@ -159,12 +167,13 @@ void App::mouse_button_callback(int button, int action, int mods) {
                 std::cout << "Tile clicked: (" << tileX << ", " << tileY << ")" << std::endl;
                 data.unselectCard();
             } else {
-                //Calculer la tuile sur laquelle l'utilisateur a cliqué
+                //Placement de la tour selectionnée
                 int tileX = static_cast<int>((x - _xMin) / TILE_WIDTH);
                 int tileY = static_cast<int>( -(y - (_mapHeight - 1)) / TILE_HEIGHT);
                 std::cout << "Tile clicked: (" << tileX << ", " << tileY << ")" << std::endl;
-                data.placeCard(tileX, tileY);
-                data.addTower(tileX, tileY, data.cardSelected);
+                if (data.placeCard(tileX, tileY)){ //Si la tour a été placée
+                    data.addTower(tileX, tileY, data.cardSelected); //on la rajoute dans la liste des tours
+                }
                 data.unselectCard();
             }
         } else if (x >= _xMin && x < _xMin+ _mapWidth && y >= _mapHeight -1 && y < 1) { //Clique sur le deck

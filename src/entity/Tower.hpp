@@ -18,6 +18,9 @@ struct Tower{
 
     bool isInRange(const Enemy& enemy) const;
     void attack(std::vector<Enemy> &enemies, float currentTime, std::vector<Projectile> &projectiles) ;
-
 };
 
+Tower getTowerLongRange(int x, int y);
+Tower getTowerShortRange(int x, int y);
+Tower getTowerSlow(int x, int y);
+int getTowerRange(int cardSelected);

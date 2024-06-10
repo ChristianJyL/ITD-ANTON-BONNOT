@@ -196,6 +196,31 @@ void draw_hovered_card(float xOrigin, float yOrigin, float width, float height){
     glPopMatrix();
 }
 
+void draw_hovered_tower(float xOrigin, float yOrigin, float width, float height, int range){
+    //dessin de la zone de la tour selon la distanche de Chebyshev
+    glPushMatrix();
+    glTranslatef(xOrigin-width* range, yOrigin+height* range , 0);
+    glColor3f(0.0f, 0.0f, 1.0f);
+    glBegin(GL_LINE_LOOP);
+    glVertex2f(0, 0);
+    glVertex2f(2*range*width+width, 0);
+    glVertex2f(2*range*width+width, -2*range*height-height);
+    glVertex2f(0, -2*range*height-height);
+    glEnd();
+    glPopMatrix();
+    //petit carré pour la tour
+    glPushMatrix();
+    glTranslatef(xOrigin, yOrigin, 0);
+    glColor3f(0.0f, 0.0f, 1.0f);
+    glBegin(GL_QUADS);
+    glVertex2f(0, 0);
+    glVertex2f(width, 0);
+    glVertex2f(width, -height);
+    glVertex2f(0, -height);
+    glEnd();
+    glPopMatrix();
+}
+
 void draw_enemies(float xOrigin, double yOrigin, std::vector<Enemy> enemies, float size){
     glPushMatrix();
     glTranslatef(xOrigin, yOrigin, 0);

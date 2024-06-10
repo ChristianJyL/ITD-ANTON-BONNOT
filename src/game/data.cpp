@@ -120,29 +120,26 @@ bool Data::placeCard(int x, int y) {
 TileType Data::getCardType(int index) {
     switch (index) {
         case 0:
-            return TileType::TowerLongRange;
+            return TileType::TowerSlow;
         case 1:
             return TileType::TowerShortRange;
         case 2:
-            return TileType::TowerSlow;
+            return TileType::TowerLongRange;
         default:
             return TileType::Empty;
     }
 }
 
 void Data::addTowerLongRange(int x, int y) {
-    Tower tower(x, y, 3, 5, 2);
-    towers.push_back(tower);
+    towers.push_back(getTowerLongRange(x, y));
 }
 
 void Data::addTowerShortRange(int x, int y) {
-    Tower tower(x, y, 10, 2, 1);
-    towers.push_back(tower);
+    towers.push_back(getTowerShortRange(x, y));
 }
 
 void Data::addTowerSlow(int x, int y) {
-    Tower tower(x, y, 6, 1, 3);
-    towers.push_back(tower);
+    towers.push_back(getTowerSlow(x, y));
 }
 
 void Data::addTower(int x , int y, int cardSelected) {
