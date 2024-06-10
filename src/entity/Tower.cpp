@@ -30,11 +30,11 @@ Tower getTowerSlow(int x, int y) {
 int getTowerRange(int cardSelected) {
     switch (cardSelected) {
         case 0:
-            return 1;
+            return getTowerSlow(0, 0).range;
         case 1:
-            return 2;
+            return getTowerShortRange(0, 0).range;
         case 2:
-            return 5;
+            return getTowerLongRange(0, 0).range;
         default:
             return 0;
     }
