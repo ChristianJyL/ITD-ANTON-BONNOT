@@ -15,9 +15,9 @@ enum TileType {
     Path = 1,
     Input = 2,
     Output = 3,
-    TowerLongRange = 4,
+    TowerSlow = 4,
     TowerShortRange = 5,
-    TowerSlow = 6,
+    TowerLongRange = 6,
 };
 
 struct Data{
