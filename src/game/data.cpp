@@ -178,6 +178,7 @@ std::pair<int,int> Data::getCoordWithNode(int node) {
     return coordNodes[node];
 }
 
+//A FAIRE : pour chaque entrée, le chemin n'est pas le même pour chaque entrée...
 std::vector<int> Data::getShortestPath(){
     std::unordered_map<int, std::pair<float, int>> dijkstraTemp;
     std::unordered_map<int, std::pair<float, int>> dijkstraResult;

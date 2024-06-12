@@ -1,0 +1,30 @@
+ITD
+# ligne de commentaire
+map map3.png
+# Blanc
+path 255 255 255
+# Bleu
+in 0 0 255
+# Rouge
+out 255 0 0
+graph 18
+node 0 8 0 1
+node 1 8 5 2
+node 2 6 5 3
+node 3 6 8 4
+node 4 10 8 5
+node 5 10 3 6
+node 6 13 3 7 8
+node 10 15 0 9
+node 9 15 1 7
+node 7 13 1 6
+node 8 13 7 11 12
+node 11 17 7 13
+node 12 13 10 14
+node 13 17 10 15
+node 14 17 10 15
+node 15 17 11 16
+node 16 28 11 17
+node 17 28 14
+
+
