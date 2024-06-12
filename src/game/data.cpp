@@ -223,7 +223,7 @@ void Data::moveEnemy(Enemy &enemy, std::vector<int> const& pathList, float time)
     }
 
     if (enemy.currentPathIndex == pathList.size() - 1) { // a changer l'action ici (l'ennemi ne meurt pas mais c'est gameover)
-        enemies.erase(std::remove(enemies.begin(), enemies.end(), enemy), enemies.end());  // L'ennemi a atteint la fin du chemin -> Supprimez l'ennemi
+        isAlive = false;
     }
 }
 

@@ -216,3 +216,7 @@ void App::size_callback(int width, int height) {
     }
 }
 
+bool App::isRunning() {
+    return data.isAlive;
+}
+

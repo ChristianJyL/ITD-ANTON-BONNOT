@@ -2,6 +2,7 @@
 #include "other/file.hpp"
 #include "other/graph.hpp"
 
+
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
 
@@ -19,27 +20,17 @@ namespace {
 // Optional: limit the frame rate
 constexpr double TARGET_TIME_FOR_FRAME { 1.0 / 60.0 };
 
+enum class GameState {
+    MainMenu,
+    InGame,
+    EndScreen
+};
+
+GameState gameState = GameState::MainMenu;
+
+
+
 int main() {
-/*
-    ITD itd;
-    std::filesystem::path path {"data/map.itd"};
-    if (isValidITD(path,itd)) {
-        std::cout << "ITD file is valid" << std::endl;
-    } else {
-        std::cout << "ITD file is not valid" << std::endl;
-    }
-
-    std::cout << getWeight(itd.list_adjacency, 0, 1) << std::endl;
-
-    std::cout << "test" << std::endl;
-    Graph::WeightedGraph graph_from_function = Graph::build_from_adjacency_list(itd.list_adjacency);
-
-    graph_from_function.print_DFS(0);
-
-
-    return 0;*/
-
-
     // Set an error callback to display glfw errors
     glfwSetErrorCallback([](int error, const char* description) {
         std::cerr << "Error " << error << ": " << description << std::endl;
@@ -49,15 +40,6 @@ int main() {
     if (!glfwInit()) {
         return -1;
     }
-
-// Not working on apple with those hint for unknown reason
-// #ifdef __APPLE__
-//     // We need to explicitly ask for a 3.3 context on Mac
-//     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-//     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-//     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-//     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-// #endif
 
     // Create window
     GLFWwindow* window { glfwCreateWindow(1280, 720, "Window", nullptr, nullptr) };
@@ -112,7 +94,10 @@ int main() {
         // Get time (in second) at loop beginning
 		double startTime { glfwGetTime() };
 
-        app.update();
+        if (app.isRunning()) {
+            // Render here
+            app.update();
+        }
 
         // Swap front and back buffers
         glfwSwapBuffers(window);
