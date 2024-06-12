@@ -89,8 +89,8 @@ void App::update()
     if (currentTime - lastTime > 2.0)
     {
         lastTime = currentTime;
-        data.addEnemy(Enemy(0,8, 0, 15, 1, 0));
-        data.addEnemy(Enemy(10, 15, 0, 15, 1, 0));
+        data.addEnemy(Enemy(0,8, 0, 1, 1, 0));
+        data.addEnemy(Enemy(10, 15, 0, 1, 1, 0));
     }
     data.moveEnemies(elapsedTime);
     data.moveProjectiles(elapsedTime);

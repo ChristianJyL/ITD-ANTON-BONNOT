@@ -67,13 +67,8 @@ struct Data{
     void moveEnemies(float time); // Déplace tous les ennemis
 
     void attackEnemies(float currentTime); // Attaque les ennemis
-
-
-
-
     void moveProjectiles(float time);
 
-    void killProjectile(const Projectile &projectile);
 };
 
 

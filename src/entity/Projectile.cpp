@@ -1,10 +1,27 @@
 #include "Projectile.hpp"
 
-void Projectile::move(float deltaTime)
-{
-    if (target == nullptr)
-    {
-        throw std::runtime_error("No target for the projectile");
+bool Projectile::isTargetAlive(const std::vector<Enemy>& enemies) const {
+    for (const auto& enemy : enemies) {
+        if (enemy.uniqueId == targetId && enemy.hp > 0) {
+            return true;
+        }
+    }
+    return false;
+}
+
+void Projectile::move(float deltaTime, const std::vector<Enemy>& enemies) {
+    if (!isTargetAlive(enemies)) {
+        throw std::runtime_error("No valid target for the projectile");
+    }
+    const Enemy* target = nullptr;
+    for (const auto& enemy : enemies) {
+        if (enemy.uniqueId == targetId) {
+            target = &enemy;
+            break;
+        }
+    }
+    if (!target) {
+        throw std::runtime_error("No valid target for the projectile");
     }
     // même principe que pour les ennemis
     float length = std::sqrt(std::pow(target->x - x, 2) + std::pow(target->y - y, 2));
@@ -15,15 +32,20 @@ void Projectile::move(float deltaTime)
     y += directionY * speed * deltaTime;
 }
 
-bool Projectile::isArrived() const
-{
-    if (target == nullptr)
-    {
-        throw std::runtime_error("No target for the projectile");
+bool Projectile::isArrived(const std::vector<Enemy>& enemies) const {
+    const Enemy* target = nullptr;
+    for (const auto& enemy : enemies) {
+        if (enemy.uniqueId == targetId) {
+            target = &enemy;
+            break;
+        }
     }
-    // même principe que pour les ennemis
+    if (!target) {
+        return true;  // Cible non valide
+    }
+
     float distance = std::sqrt((target->x - x) * (target->x - x) + (target->y - y) * (target->y - y));
-    return distance < 0.1f;
+    return distance < 0.9f;
 }
 
 void Projectile::draw_projectile(float scale, float size, GLuint texture) const

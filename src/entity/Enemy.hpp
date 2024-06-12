@@ -11,6 +11,7 @@ struct Enemy{
     float speed{};
     int reward{};
     int currentPathIndex = 0;
+     int uniqueId  = generateUniqueId();
 
     Enemy(int spawnIndex, float x, float y, int hp, float speed, int reward) : spawnIndex(spawnIndex), x(x), y(y), hp(hp), speed(speed), reward(reward) {} // Constructor
 
@@ -19,6 +20,13 @@ struct Enemy{
     void draw_enemy(float scale , float size, GLuint texture) const;
 
     bool operator==(const Enemy& other) const {
-        return spawnIndex== other.spawnIndex &&  x == other.x && y == other.y && hp == other.hp && speed == other.speed && reward == other.reward;
+        return uniqueId == other.uniqueId;
     }
+
+    static int generateUniqueId(){
+        static int id = 0;
+        return id++;
+    }
+
+
 };

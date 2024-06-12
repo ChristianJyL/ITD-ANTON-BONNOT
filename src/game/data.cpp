@@ -244,14 +244,21 @@ void Data::attackEnemies(float currentTime){
 }
 
 void Data::moveProjectiles(float time) {
-    for (Projectile &projectile : projectiles) {
-        projectile.move(time);
-        if (projectile.isArrived()) {
-            killProjectile(projectile);
+    for (int i = 0; i < projectiles.size();) {
+        if (!projectiles[i].isTargetAlive(enemies)) {
+            projectiles.erase(projectiles.begin() + i);  // Supprimer le projectile si la cible est morte
+        } else if (projectiles[i].isArrived(enemies)) {
+            for (int j = 0; j < enemies.size(); ++j) {
+                if (enemies[j].uniqueId == projectiles[i].targetId) {
+                    enemies[j].hp -= projectiles[i].damage;
+                    break;
+                }
+            }
+            projectiles.erase(projectiles.begin() + i);  // Supprimer le projectile après avoir infligé des dégâts
+        } else {
+            projectiles[i].move(time, enemies);
+            ++i;
         }
     }
 }
 
-void Data::killProjectile(Projectile const& projectile) {
-    projectiles.erase(std::remove(projectiles.begin(), projectiles.end(), projectile), projectiles.end());
-}
