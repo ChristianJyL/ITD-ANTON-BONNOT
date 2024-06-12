@@ -38,6 +38,7 @@ private:
 
     // Add your variables here
     GLuint _texture {};
+    std::unordered_map<std::string, GLuint> textures {};
     float _angle {};
 
     SimpleText TextRenderer {};

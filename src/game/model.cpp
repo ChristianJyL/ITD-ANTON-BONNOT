@@ -1,6 +1,7 @@
 #include "model.hpp"
 
 #include "glad/glad.h"
+#include "../../build/_deps/img-src/lib/stb_image/stb_image.h"
 
 GLuint loadTexture(uint8_t const* data, int width, int height) {
     GLuint textureId {};
@@ -19,6 +20,7 @@ GLuint loadTexture(uint8_t const* data, int width, int height) {
     // Error on MACOS (segmentation fault) when using glGenerateMipmap
     // glGenerateMipmap(GL_TEXTURE_2D);
     glDisable(GL_TEXTURE_2D);
+    glDisable(GL_BLEND);
 
     return textureId;
 }
@@ -100,53 +102,66 @@ void draw_grid(float xOrigin, float yOrigin, float tileWidth, float tileHeight){
 }
 
 void draw_cell(float xOrigin, float yOrigin, float tileWidth, float tileHeight, GLuint textureId){
-    //glEnable(GL_TEXTURE_2D);
-    //glBindTexture(GL_TEXTURE_2D, textureId);
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, textureId);
     glPushMatrix();
         glTranslatef(xOrigin, yOrigin, 0);
         glBegin(GL_QUADS);
+            glTexCoord2d(0,1);
             glVertex2f(0, 0);
+            glTexCoord2d(1,1);
             glVertex2f(tileWidth, 0);
+            glTexCoord2d(1,0);
             glVertex2f(tileWidth, -tileHeight);
+            glTexCoord2d(0,0);
             glVertex2f(0, -tileHeight);
         glEnd();
     glPopMatrix();
-    //glBindTexture(GL_TEXTURE_2D, 0);
-    //glDisable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, 0);
+    glDisable(GL_TEXTURE_2D);
 }
 
-void draw_map(float x, float y, float tileWidth, float tileHeight, const Data& data){ //Dessine la map en fonction de la grille de data (remplacer les couleurs avec les textures à terme)
+void draw_map(float x, float y, float tileWidth, float tileHeight, const Data& data, std::unordered_map<std::string, GLuint> textures){ //Dessine la map en fonction de la grille de data (remplacer les couleurs avec les textures à terme)
     glPushMatrix();
     glTranslatef(x, y, 0);
+    glColor3f(1, 1, 1);
     for (int j = data.height -1; j >= 0; --j)
     {
         for (unsigned int i = 0; i < data.width; ++i)
         {
+            GLuint texture{};
             switch (data.getCell(i,j))
             {
             case 1:
-                glColor3f(data.path.r / 255.0f, data.path.g / 255.0f, data.path.b / 255.0f);
+                texture = textures["carpet"];
+                // glColor3f(data.path.r / 255.0f, data.path.g / 255.0f, data.path.b / 255.0f);
                 break;
             case 2:
-                glColor3f(data.start.r / 255.0f, data.start.g / 255.0f, data.start.b / 255.0f);
+            texture = textures["floor"];
+                // glColor3f(data.start.r / 255.0f, data.start.g / 255.0f, data.start.b / 255.0f);
                 break;
             case 3:
-                glColor3f(data.end.r / 255.0f, data.end.g / 255.0f, data.end.b / 255.0f);
+                texture = textures["manager"];
+                // glColor3f(data.end.r / 255.0f, data.end.g / 255.0f, data.end.b / 255.0f);
                 break;
             case 4:
-                glColor3f(1.0f, 0.8f, 0.0f);
+                // glColor3f(1.0f, 0.8f, 0.0f);
+                texture = textures["towerSlow"];
                 break;
             case 5:
-                glColor3f(1.0f, 0.5f, 0.0f);
+                // glColor3f(1.0f, 0.5f, 0.0f);
+                texture = textures["towerShort"];
                 break;
             case 6:
-                glColor3f(1.0f, 0.1f, 0.0f);
+                // glColor3f(1.0f, 0.1f, 0.0f);
+                texture = textures["towerLong"];
                 break;
             default:
-                glColor3f(0.0f, 0.0f, 0.0f);
+                texture = textures["floor"];
+                // glColor3f(0.0f, 0.0f, 0.0f);
                 break;
             }
-            draw_cell(i * tileWidth, - j * tileHeight, tileWidth, tileHeight);
+            draw_cell(i * tileWidth, - j * tileHeight, tileWidth, tileHeight, texture);
         }
     }
     glPopMatrix();
@@ -221,22 +236,22 @@ void draw_hovered_tower(float xOrigin, float yOrigin, float width, float height,
     glPopMatrix();
 }
 
-void draw_enemies(float xOrigin, double yOrigin, std::vector<Enemy> enemies, float size){
+void draw_enemies(float xOrigin, double yOrigin, std::vector<Enemy> enemies, float size, GLuint texture){
     glPushMatrix();
     glTranslatef(xOrigin, yOrigin, 0);
     for(Enemy const& enemy : enemies){
         //std::cout << "x: " << enemy.x << " y: " << enemy.y << std::endl;
-        enemy.draw_enemy(0.1 , size);
+        enemy.draw_enemy(0.1 , size, texture);
     }
     glPopMatrix();
 }
 
 
-void draw_projectiles(float xOrigin, float yOrigin, const std::vector<Projectile>& projectiles, float size){
+void draw_projectiles(float xOrigin, float yOrigin, const std::vector<Projectile>& projectiles, float size, GLuint texture){
     glPushMatrix();
     glTranslatef(xOrigin, yOrigin, 0);
     for(Projectile const& projectile : projectiles){
-        projectile.draw_projectile(0.1, size);
+        projectile.draw_projectile(0.1, size, texture);
     }
     glPopMatrix();
 }

@@ -12,7 +12,7 @@ struct Projectile {
 
     void move(float deltaTime);
     bool isArrived() const;
-    void draw_projectile(float scale, float size) const;
+    void draw_projectile(float scale, float size, GLuint texture) const;
 
     bool operator==(const Projectile& other) const {
         return x == other.x && y == other.y && speed == other.speed && target == other.target;

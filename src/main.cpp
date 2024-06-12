@@ -9,6 +9,8 @@
 #include <iostream>
 
 #include "game/App.hpp"
+// #include "../build/_deps/img-src/lib/stb_image/stb_image.h"
+// #include "game/model.cpp"
 
 namespace {
     App& window_as_app(GLFWwindow* window)
@@ -114,6 +116,8 @@ int main() {
 		}
     }
 
+    // stbi_image_free(loaded_floor);
+    // glDeleteTextures(1, &textureID);
     glfwTerminate();
     return 0;
 }
