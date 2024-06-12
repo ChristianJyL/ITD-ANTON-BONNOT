@@ -5,19 +5,20 @@
 #include "glad/glad.h"
 
 struct Enemy{
+    int spawnIndex{};
     float x{},y{};
     int hp{};
     float speed{};
     int reward{};
     int currentPathIndex = 0;
 
-    Enemy(float x, float y, int hp, float speed, int reward) : x(x), y(y), hp(hp), speed(speed), reward(reward) {} // Constructor
+    Enemy(int spawnIndex, float x, float y, int hp, float speed, int reward) : spawnIndex(spawnIndex), x(x), y(y), hp(hp), speed(speed), reward(reward) {} // Constructor
 
     void moveX(float dx);
     void moveY(float dy);
     void draw_enemy(float scale , float size, GLuint texture) const;
 
     bool operator==(const Enemy& other) const {
-        return  x == other.x && y == other.y && hp == other.hp && speed == other.speed && reward == other.reward;
+        return spawnIndex== other.spawnIndex &&  x == other.x && y == other.y && hp == other.hp && speed == other.speed && reward == other.reward;
     }
 };

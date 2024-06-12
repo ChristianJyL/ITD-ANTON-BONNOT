@@ -28,6 +28,7 @@ struct Data{
     Graph::WeightedGraph graph;
     std::unordered_map<int, std::pair<int, int>> coordNodes;
     std::vector<int> entries;
+    std::unordered_map<int, std::vector<int>> shortestPaths;
     int exit;
 
     int width; // Largeur de la grille
@@ -52,7 +53,8 @@ struct Data{
     TileType getCardType(int index); // Récupère le type de la carte à l'index donné
     int getNodeWithCoord(int x, int y); // Récupère le noeud à la position (x, y)
     std::pair<int,int> getCoordWithNode(int node); // Récupère les coordonnées du noeud donné
-    std::vector<int> getShortestPath(); // Récupère le chemin le plus court
+    std::vector<int> getShortestPath(int entry) const; // Récupère le chemin le plus court
+    void putShortestPaths();
 
     void addTower(int x, int y , int cardSelected); // Ajoute une tour
     void addTowerLongRange(int x,int y);

@@ -17,7 +17,7 @@ public:
     void scroll_callback(double xoffset, double yoffset);
     void cursor_position_callback(double xpos, double ypos);
     void size_callback(int width, int height);
-    bool isRunning();
+    bool isRunning() const;
 
 private:
     void render();

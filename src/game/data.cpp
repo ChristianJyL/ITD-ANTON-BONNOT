@@ -179,28 +179,24 @@ std::pair<int,int> Data::getCoordWithNode(int node) {
 }
 
 //A FAIRE : pour chaque entrée, le chemin n'est pas le même pour chaque entrée...
-std::vector<int> Data::getShortestPath(){
+std::vector<int> Data::getShortestPath(int entry) const{
     std::unordered_map<int, std::pair<float, int>> dijkstraTemp;
-    std::unordered_map<int, std::pair<float, int>> dijkstraResult;
-    int minDistance {0};
-    int minNode {0};
-    for (int entry : entries){
-        dijkstraTemp = dijkstra(graph,entry, exit);
-        if (minDistance == 0 || dijkstraResult[exit].first < minDistance){
-            minDistance = dijkstraTemp[exit].first;
-            minNode = entry;
-            dijkstraResult = dijkstraTemp;
-        }
-    }
+    dijkstraTemp = dijkstra(graph,entry, exit);
     std::vector<int> path;
     int currentNode = exit;
-    while (currentNode != minNode){
+    while (currentNode != entry){
         path.push_back(currentNode);
-        currentNode = dijkstraResult[currentNode].second;
+        currentNode = dijkstraTemp[currentNode].second;
     }
-    path.push_back(minNode);
+    path.push_back(entry);
     std::reverse(path.begin(), path.end());
     return path;
+}
+
+void Data::putShortestPaths(){
+    for (int entry : entries) {
+        shortestPaths[entry] = getShortestPath(entry);
+    }
 }
 
 void Data::moveEnemy(Enemy &enemy, std::vector<int> const& pathList, float time) {
@@ -233,9 +229,8 @@ void Data::killEnemy(Enemy const& enemy) {
 }
 
 void Data::moveEnemies(float time) { //on bouge tous les ennemis
-    std::vector<int> pathList = getShortestPath();
     for (Enemy &enemy: enemies) {
-        moveEnemy(enemy, pathList, time);
+        moveEnemy(enemy, shortestPaths.at(enemy.spawnIndex), time);
         if (enemy.hp <= 0) {
             killEnemy(enemy);
         }

@@ -23,7 +23,7 @@ bool Projectile::isArrived() const
     }
     // même principe que pour les ennemis
     float distance = std::sqrt((target->x - x) * (target->x - x) + (target->y - y) * (target->y - y));
-    return distance < 0.3f;
+    return distance < 0.1f;
 }
 
 void Projectile::draw_projectile(float scale, float size, GLuint texture) const

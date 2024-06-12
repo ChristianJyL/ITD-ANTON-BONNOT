@@ -25,11 +25,12 @@ std::unordered_map<std::string, GLuint> addTexture(std::unordered_map<std::strin
 App::App() : _previousTime(0.0), _viewSize(2.0), _mouseX(0.0f), _mouseY(0.0f)
 {
     // load what needs to be loaded here (for example textures)
-    img::Image image_map = {img::load(make_absolute_path("images/map2.png", true), 3, true)};
+    img::Image image_map = {img::load(make_absolute_path("images/map3.png", true), 3, true)};
     img::Image image_deck = {img::load(make_absolute_path("images/level.png", true), 3, true)};
     // img::Image wood_floor = {img::load(make_absolute_path("images/wood_floor.png", true), 3, true)};
-    data.loadFromITD("data/map.itd");
-    std::cout << data.getShortestPath() << std::endl;
+    data.loadFromITD("data/map2.itd");
+    data.putShortestPaths();
+
     _texture = loadTexture(image_map);
     textures = addTexture(textures, "floor", "images/wood_floor.png");
     textures = addTexture(textures, "carpet", "images/carpet.PNG");
@@ -85,10 +86,11 @@ void App::update()
     _previousTime = currentTime;
     static double lastTime = 0.0;
 
-    if (currentTime - lastTime > 1.0)
+    if (currentTime - lastTime > 2.0)
     {
         lastTime = currentTime;
-        data.addEnemy(Enemy(13, 4, 15, 1, 0));
+        data.addEnemy(Enemy(0,8, 0, 15, 1, 0));
+        data.addEnemy(Enemy(10, 15, 0, 15, 1, 0));
     }
     data.moveEnemies(elapsedTime);
     data.moveProjectiles(elapsedTime);
@@ -252,11 +254,8 @@ void App::size_callback(int width, int height)
         glOrtho(-_viewSize / 2.0f, _viewSize / 2.0f, -_viewSize / 2.0f / aspectRatio, _viewSize / 2.0f / aspectRatio, -1.0f, 1.0f);
     }
 }
-<<<<<<< Updated upstream
 
-bool App::isRunning() {
+
+bool App::isRunning() const {
     return data.isAlive;
 }
-
-=======
->>>>>>> Stashed changes

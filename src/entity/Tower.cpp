@@ -6,7 +6,7 @@ bool Tower::isInRange(const Enemy& enemy) const {
 }
 
 void Tower::attack(std::vector<Enemy> &enemies , float currentTime , std::vector<Projectile> &projectiles)  {
-    for (Enemy& enemy : enemies) {
+    for (Enemy &enemy : enemies) {
         if (isInRange(enemy) && currentTime - lastAttackTime >= cadence) {
             enemy.hp -= power;
             lastAttackTime = currentTime;
