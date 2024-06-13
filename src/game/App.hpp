@@ -26,6 +26,7 @@ public:
     void renderMainMenu();
     void renderGameOver();
     void renderWin();
+    void display_money(int money);
 
 private:
     void render();

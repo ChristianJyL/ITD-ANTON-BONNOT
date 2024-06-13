@@ -2,6 +2,7 @@
 #include "Enemy.hpp"
 #include <cmath>
 #include "glad/glad.h"
+#include <unordered_map>
 
 struct Projectile {
     float x, y {};
@@ -19,7 +20,7 @@ struct Projectile {
     int getTypeTower() const;
 
 
-    void draw_projectile(float scale, float size, GLuint texture) const;
+    void draw_projectile(float scale, float size, std::unordered_map<std::string, GLuint> textures) const;
 
     bool operator==(const Projectile& other) const {
         return x == other.x && y == other.y && speed == other.speed && damage == other.damage && targetId == other.targetId;

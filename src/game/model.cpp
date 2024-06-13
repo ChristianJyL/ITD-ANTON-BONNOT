@@ -148,7 +148,7 @@ void draw_map(float x, float y, float tileWidth, float tileHeight, const Data &d
                 texture = textures["carpet"];
                 break;
             case 2:
-                texture = textures["floor"];
+                texture = textures["carpet"];
                 break;
             case 3:
                 draw_cell(i * tileWidth, -j * tileHeight, tileWidth, tileHeight, textures["carpet"]);
@@ -262,13 +262,13 @@ void draw_enemies(float xOrigin, double yOrigin, std::vector<Enemy> enemies, flo
     glPopMatrix();
 }
 
-void draw_projectiles(float xOrigin, float yOrigin, const std::vector<Projectile> &projectiles, float size, GLuint texture)
+void draw_projectiles(float xOrigin, float yOrigin, const std::vector<Projectile> &projectiles, float size, std::unordered_map<std::string, GLuint> textures)
 {
     glPushMatrix();
     glTranslatef(xOrigin, yOrigin, 0);
     for (Projectile const &projectile : projectiles)
     {
-        projectile.draw_projectile(0.1, size, texture);
+        projectile.draw_projectile(0.1, size, textures);
     }
     glPopMatrix();
 }

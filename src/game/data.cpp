@@ -262,5 +262,3 @@ void Data::attackEnemies(float currentTime){
         tower.attack(enemies, currentTime, projectiles);
     }
 }
-
-

@@ -38,7 +38,7 @@ struct Data{
     glm::u8vec3 end; // Couleur de la fin du chemin
     glm::u8vec3 path; // Couleur du chemin
     int cardSelected = -1;
-    int money = 200;
+    int money = 200000;
 
     bool isAlive = true;
 

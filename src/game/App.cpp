@@ -33,8 +33,13 @@ App::App() : _previousTime(0.0), _viewSize(2.0), _mouseX(0.0f), _mouseY(0.0f)
     textures["towerSlow"] = loadTexture(img::load(make_absolute_path("images/towerSlow.png", true), 4, true));
     textures["towerShort"] = loadTexture(img::load(make_absolute_path("images/towerShort.png", true), 4, true));
     textures["towerLong"] = loadTexture(img::load(make_absolute_path("images/towerLong.png", true), 4, true));
-    textures["food"] = loadTexture(img::load(make_absolute_path("images/food.png", true), 4, true));
+    textures["pizza"] = loadTexture(img::load(make_absolute_path("images/pizza.png", true), 4, true));
+    textures["bucket"] = loadTexture(img::load(make_absolute_path("images/bucket.png", true), 4, true));
+    textures["burger"] = loadTexture(img::load(make_absolute_path("images/burger.png", true), 4, true));
     textures["costumer"] = loadTexture(img::load(make_absolute_path("images/costumer.png", true), 4, true));
+    textures["homepage"] = loadTexture(img::load(make_absolute_path("images/homepage.png", true), 4, true));
+    textures["wasted"] = loadTexture(img::load(make_absolute_path("images/wasted.png", true), 4, true));
+    textures["victory"] = loadTexture(img::load(make_absolute_path("images/victory.png", true), 4, true));
 
     _mapWidth = static_cast<float>(image_map.width()) / 10.0f;
     _mapHeight = static_cast<float>(image_map.height()) / 10.0f;
@@ -126,7 +131,7 @@ void App::render()
     draw_map(_xMin, 0.5f, TILE_WIDTH, TILE_HEIGHT, data, textures);
     draw_enemies(_xMin, _mapHeight - 1, data.enemies, 0.1, textures["costumer"]);
 
-    draw_projectiles(_xMin, _mapHeight - 1, data.projectiles, 0.1, textures["food"]);
+    draw_projectiles(_xMin, _mapHeight - 1, data.projectiles, 0.1, textures);
 
     if (data.isCardSelected())
     {
@@ -272,9 +277,25 @@ void App::renderMainMenu()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    TextRenderer.Label("Main Menu", 640, 320, SimpleText::CENTER);
-    TextRenderer.Label("Press Enter to Start", 643, 360, SimpleText::CENTER);
-    TextRenderer.Render();
+
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, textures["homepage"]);
+    glPushMatrix();
+    glTranslatef(-0.5, -0.5, 0);
+    glBegin(GL_QUADS);
+        glTexCoord2d(1, 1); 
+        glVertex2f(2.3f, 1.5f);
+        glTexCoord2d(0, 1); glVertex2f(-1.3f, 1.5f);
+        glTexCoord2d(0, 0); glVertex2f(-1.3f, -0.5f);
+        glTexCoord2d(1, 0); glVertex2f(2.3f, -0.5f);
+    glEnd();
+    glPopMatrix();
+    glBindTexture(GL_TEXTURE_2D, 0);
+    glDisable(GL_TEXTURE_2D);
+
+    // TextRenderer.Label("Main Menu", 640, 320, SimpleText::CENTER);
+    // TextRenderer.Label("Press Enter to Start", 643, 360, SimpleText::CENTER);
+    // TextRenderer.Render();
 }
 
 void App::renderGameOver()
@@ -282,9 +303,25 @@ void App::renderGameOver()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    TextRenderer.Label("Game Over", 640, 320, SimpleText::CENTER);
-    TextRenderer.Label("Press Enter to close the game", 643, 360, SimpleText::CENTER);
-    TextRenderer.Render();
+
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, textures["wasted"]);
+    glPushMatrix();
+    glTranslatef(-0.5, -0.5, 0);
+    glBegin(GL_QUADS);
+        glTexCoord2d(1, 1); 
+        glVertex2f(2.3f, 1.5f);
+        glTexCoord2d(0, 1); glVertex2f(-1.3f, 1.5f);
+        glTexCoord2d(0, 0); glVertex2f(-1.3f, -0.5f);
+        glTexCoord2d(1, 0); glVertex2f(2.3f, -0.5f);
+    glEnd();
+    glPopMatrix();
+    glBindTexture(GL_TEXTURE_2D, 0);
+    glDisable(GL_TEXTURE_2D);
+
+    // TextRenderer.Label("Game Over", 640, 320, SimpleText::CENTER);
+    // TextRenderer.Label("Press Enter to close the game", 643, 360, SimpleText::CENTER);
+    // TextRenderer.Render();
 }
 
 void App::renderWin()
@@ -292,7 +329,24 @@ void App::renderWin()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    TextRenderer.Label("You Win!", 640, 320, SimpleText::CENTER);
-    TextRenderer.Label("Press Enter to close the game", 643, 320, SimpleText::CENTER);
-    TextRenderer.Render();
+
+glEnable(GL_TEXTURE_2D);
+glColor3f(1, 1, 1);
+    glBindTexture(GL_TEXTURE_2D, textures["victory"]);
+    glPushMatrix();
+    glTranslatef(-0.5, -0.5, 0);
+    glBegin(GL_QUADS);
+        glTexCoord2d(1, 1); 
+        glVertex2f(2.3f, 1.5f);
+        glTexCoord2d(0, 1); glVertex2f(-1.3f, 1.5f);
+        glTexCoord2d(0, 0); glVertex2f(-1.3f, -0.5f);
+        glTexCoord2d(1, 0); glVertex2f(2.3f, -0.5f);
+    glEnd();
+    glPopMatrix();
+    glBindTexture(GL_TEXTURE_2D, 0);
+    glDisable(GL_TEXTURE_2D);
+
+    // TextRenderer.Label("You Win!", 640, 320, SimpleText::CENTER);
+    // TextRenderer.Label("Press Enter to close the game", 643, 320, SimpleText::CENTER);
+    // TextRenderer.Render();
 }
