@@ -16,6 +16,7 @@ struct Projectile {
     void move(float deltaTime ,  const std::vector<Enemy>& enemies);
     bool isArrived( const std::vector<Enemy>& enemies) const;
     bool isTargetAlive(const std::vector<Enemy>& enemies) const;
+    int getTypeTower() const;
 
 
     void draw_projectile(float scale, float size, GLuint texture) const;

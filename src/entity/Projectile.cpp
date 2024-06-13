@@ -78,3 +78,16 @@ void Projectile::draw_projectile(float scale, float size, GLuint texture) const
     // glEnd();
     // glPopMatrix();
 }
+
+int Projectile::getTypeTower() const { //On retourne le type de la tour en fonction des dégâts
+    switch (damage) {
+        case 6:
+            return 0;
+        case 10:
+            return 1;
+        case 3:
+            return 2;
+        default:
+            return -1;
+    }
+}
