@@ -14,14 +14,14 @@ void Tower::attack(std::vector<Enemy> &enemies , float currentTime , std::vector
     }
 }
 Tower getTowerSlow(int x, int y) {
-    return Tower(x, y, 6, 1, 3);
+    return Tower{x, y, 6, 1, 3,100};
 }
 
 Tower getTowerShortRange(int x, int y) {
-    return Tower(x, y, 10, 2, 1);
+    return Tower{x, y, 10, 2, 1,200};
 }
 Tower getTowerLongRange(int x, int y) {
-    return Tower(x, y, 3, 5, 2);
+    return Tower{x, y, 3, 5, 2,250};
 }
 
 

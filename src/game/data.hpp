@@ -37,6 +37,7 @@ struct Data{
     glm::u8vec3 end; // Couleur de la fin du chemin
     glm::u8vec3 path; // Couleur du chemin
     int cardSelected = -1;
+    int money = 100;
 
     bool isAlive = true;
 
@@ -50,16 +51,15 @@ struct Data{
     void selectCard(int index); // Sélectionne une carte
     void unselectCard(); // Désélectionne une carte
     bool placeCard(int x, int y); // Place une carte sur la grille
-    TileType getCardType(int index); // Récupère le type de la carte à l'index donné
+
     int getNodeWithCoord(int x, int y); // Récupère le noeud à la position (x, y)
     std::pair<int,int> getCoordWithNode(int node); // Récupère les coordonnées du noeud donné
     std::vector<int> getShortestPath(int entry) const; // Récupère le chemin le plus court
     void putShortestPaths();
 
     void addTower(int x, int y , int cardSelected); // Ajoute une tour
-    void addTowerLongRange(int x,int y);
-    void addTowerShortRange(int x,int y);
-    void addTowerSlow(int x, int y);
+    TileType getCardType(int index); // Récupère le type de la carte à l'index donné
+    Tower getTower(int x, int y) const; // Récupère une tour
 
     void addEnemy(Enemy enemy); // Ajoute un ennemi
     void killEnemy(Enemy const& enemy); // Tue un ennemi

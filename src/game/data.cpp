@@ -109,11 +109,15 @@ bool Data::placeCard(int x, int y) {
         return false;
     }
     if (getCell(x, y) == TileType::Empty){
-        setCell(x, y, getCardType(cardSelected));
-        return true;
-    } else {
-        return false;
+        Tower newTower = getTower(x, y);
+        if (money >= newTower.cost) {
+            towers.push_back(newTower);
+            money -= newTower.cost;
+            setCell(x, y, getCardType(cardSelected));
+            return true;
+        }
     }
+    return false;
 }
 
 
@@ -130,36 +134,20 @@ TileType Data::getCardType(int index) {
     }
 }
 
-void Data::addTowerLongRange(int x, int y) {
-    towers.push_back(getTowerLongRange(x, y));
-}
-
-void Data::addTowerShortRange(int x, int y) {
-    towers.push_back(getTowerShortRange(x, y));
-}
-
-void Data::addTowerSlow(int x, int y) {
-    towers.push_back(getTowerSlow(x, y));
-}
-
-void Data::addTower(int x , int y, int cardSelected) {
-    if (cardSelected == -1) {
-        return;
-    }
+Tower Data::getTower(int x, int y) const {
     switch (cardSelected) {
         case 0:
-            addTowerSlow(x, y);
-            break;
+            return getTowerSlow(x, y);
         case 1:
-            addTowerShortRange(x, y);
-            break;
+            return getTowerShortRange(x, y);
         case 2:
-            addTowerLongRange(x, y);
-            break;
+            return getTowerLongRange(x, y);
         default:
-            break;
+            return Tower{};
     }
 }
+
+
 
 void Data::addEnemy(Enemy enemy) {
     enemies.push_back(enemy);
@@ -232,7 +220,9 @@ void Data::moveEnemies(float time) { //on bouge tous les ennemis
     for (Enemy &enemy: enemies) {
         moveEnemy(enemy, shortestPaths.at(enemy.spawnIndex), time);
         if (enemy.hp <= 0) {
+            money += enemy.reward;
             killEnemy(enemy);
+            std::cout << money << std::endl;
         }
     }
 }

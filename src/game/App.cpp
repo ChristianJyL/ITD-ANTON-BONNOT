@@ -89,8 +89,8 @@ void App::update()
     if (currentTime - lastTime > 2.0)
     {
         lastTime = currentTime;
-        data.addEnemy(Enemy(0,8, 0, 1, 1, 0));
-        data.addEnemy(Enemy(10, 15, 0, 1, 1, 0));
+        data.addEnemy(Enemy(0,8, 0, 1, 1, 15));
+        data.addEnemy(Enemy(10, 15, 0, 1, 1, 10));
     }
     data.moveEnemies(elapsedTime);
     data.moveProjectiles(elapsedTime);
@@ -200,8 +200,12 @@ void App::mouse_button_callback(int button, int action, int mods)
                 int tileY = static_cast<int>(-(y - (_mapHeight - 1)) / TILE_HEIGHT);
                 std::cout << "Tile clicked: (" << tileX << ", " << tileY << ")" << std::endl;
                 if (data.placeCard(tileX, tileY))
-                {                                                   // Si la tour a été placée
-                    data.addTower(tileX, tileY, data.cardSelected); // on la rajoute dans la liste des tours
+                {
+                    std::cout << "Card placed" << std::endl;
+                }
+                else
+                {
+                    std::cout << "Card not placed" << std::endl;
                 }
                 data.unselectCard();
             }
