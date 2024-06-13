@@ -16,33 +16,26 @@ static const float TILE_WIDTH = 0.1;
 static const float TILE_HEIGHT = 0.1;
 static const int NB_CARDS = 3;
 
-std::unordered_map<std::string, GLuint> addTexture(std::unordered_map<std::string, GLuint> textures, std::string id, std::string image)
-{
-    textures[id] = loadTexture(img::load(make_absolute_path(image, true), 4, true));
-    return textures;
-}
-
 App::App() : _previousTime(0.0), _viewSize(2.0), _mouseX(0.0f), _mouseY(0.0f)
 {
     // load what needs to be loaded here (for example textures)
     img::Image image_map = {img::load(make_absolute_path("images/map3.png", true), 3, true)};
     img::Image image_deck = {img::load(make_absolute_path("images/level.png", true), 3, true)};
-    // img::Image wood_floor = {img::load(make_absolute_path("images/wood_floor.png", true), 3, true)};
     data.loadFromITD("data/map2.itd");
     data.putShortestPaths();
 
     _texture = loadTexture(image_map);
-    textures = addTexture(textures, "floor", "images/wood_floor.png");
-    textures = addTexture(textures, "carpet", "images/carpet.PNG");
-    textures = addTexture(textures, "manager", "images/manager.png");
-    textures = addTexture(textures, "towerSlow", "images/towerSlow.png");
-    textures = addTexture(textures, "towerShort", "images/towerShort.png");
-    textures = addTexture(textures, "towerLong", "images/towerLong.png");
-    // textures = addTexture(textures, "costumer", "images/costumer.png");
-    textures = addTexture(textures, "food", "images/food.png");
+
+    // Chargement des textures
+    textures["floor"] = loadTexture(img::load(make_absolute_path("images/floor.png", true), 4, true));
+    textures["manager"] = loadTexture(img::load(make_absolute_path("images/manager.png", true), 4, true));
+    textures["carpet"] = loadTexture(img::load(make_absolute_path("images/carpet.PNG", true), 4, true));
+    textures["towerSlow"] = loadTexture(img::load(make_absolute_path("images/towerSlow.png", true), 4, true));
+    textures["towerShort"] = loadTexture(img::load(make_absolute_path("images/towerShort.png", true), 4, true));
+    textures["towerLong"] = loadTexture(img::load(make_absolute_path("images/towerLong.png", true), 4, true));
+    textures["food"] = loadTexture(img::load(make_absolute_path("images/food.png", true), 4, true));
     textures["costumer"] = loadTexture(img::load(make_absolute_path("images/costumer.png", true), 4, true));
 
-    // _woodTexture = loadTexture(wood_floor);
     _mapWidth = static_cast<float>(image_map.width()) / 10.0f;
     _mapHeight = static_cast<float>(image_map.height()) / 10.0f;
     // data.addEnemy({13,4,0,1,0});    data.addEnemy({13,4,0,2,0});    data.addEnemy({13,4,0,1.5,0});    data.addEnemy({13,4,0,0.5f,0});
@@ -85,40 +78,40 @@ void App::update()
     const double elapsedTime{currentTime - _previousTime};
     _previousTime = currentTime;
 
-    switch (gameState) {
-        case GameState::MainMenu:
-            renderMainMenu();
-            break;
-        case GameState::InGame:
-            data.alternateSpawn(currentTime);
-            data.moveEnemies(elapsedTime);
-            data.moveProjectiles(elapsedTime);
-            data.attackEnemies(currentTime);
+    switch (gameState)
+    {
+    case GameState::MainMenu:
+        renderMainMenu();
+        break;
+    case GameState::InGame:
+        data.alternateSpawn(currentTime);
+        data.moveEnemies(elapsedTime);
+        data.moveProjectiles(elapsedTime);
+        data.attackEnemies(currentTime);
 
-            //if all enemies are dead (après 20 secondes)
-            if (data.enemies.empty() && currentTime > 20)
-            {
-                gameState = GameState::EndScreen;
-            }
-            if (!data.isAlive)
-            {
-                gameState = GameState::EndScreen;
-            }
+        // if all enemies are dead (après 20 secondes)
+        if (data.enemies.empty() && currentTime > 20)
+        {
+            gameState = GameState::EndScreen;
+        }
+        if (!data.isAlive)
+        {
+            gameState = GameState::EndScreen;
+        }
 
-            render();
-            break;
-        case GameState::EndScreen:
-            if (data.isAlive)
-            {
-                renderWin();
-            }
-            else
-            {
-                renderGameOver();
-            }
-            break;
+        render();
+        break;
+    case GameState::EndScreen:
+        if (data.isAlive)
+        {
+            renderWin();
+        }
+        else
+        {
+            renderGameOver();
+        }
+        break;
     }
-
 }
 
 void App::render()
@@ -167,15 +160,18 @@ void App::render()
     {
         draw_hovered_card(_xMin + data.cardSelected * (3.0f / NB_CARDS), 1.0f, 3.0f / NB_CARDS, 0.5f);
     }
-
 }
 
 void App::key_callback(int key, int scancode, int action, int mods)
 {
-    if (action == GLFW_PRESS) {
-        if (gameState == GameState::MainMenu && key == GLFW_KEY_ENTER) {
+    if (action == GLFW_PRESS)
+    {
+        if (gameState == GameState::MainMenu && key == GLFW_KEY_ENTER)
+        {
             gameState = GameState::InGame;
-        } else if (gameState == GameState::EndScreen && key == GLFW_KEY_ENTER) {
+        }
+        else if (gameState == GameState::EndScreen && key == GLFW_KEY_ENTER)
+        {
             glfwSetWindowShouldClose(glfwGetCurrentContext(), GLFW_TRUE);
         }
     }
@@ -271,10 +267,8 @@ void App::size_callback(int width, int height)
     }
 }
 
-// <<<<<<< Updated upstream
-
-
-void App::renderMainMenu(){
+void App::renderMainMenu()
+{
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
@@ -283,7 +277,8 @@ void App::renderMainMenu(){
     TextRenderer.Render();
 }
 
-void App::renderGameOver(){
+void App::renderGameOver()
+{
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
@@ -292,7 +287,8 @@ void App::renderGameOver(){
     TextRenderer.Render();
 }
 
-void App::renderWin(){
+void App::renderWin()
+{
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
@@ -300,10 +296,3 @@ void App::renderWin(){
     TextRenderer.Label("Press Enter to close the game", 643, 320, SimpleText::CENTER);
     TextRenderer.Render();
 }
-
-
-// =======
-bool App::isRunning() {
-    return data.isAlive;
-}
->>>>>>> Stashed changes
