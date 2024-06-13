@@ -12,8 +12,8 @@ inline GLuint loadTexture(img::Image const& image) { return loadTexture(image.da
 
 void draw_quad_with_texture(GLuint textureId);
 
-void draw_one_card(GLuint textureId, float x, float y, float width, float height);
-void draw_deck(GLuint textureId, float x, float y, float width, float height, int nb_cards);
+void draw_one_card(std::unordered_map<int, GLuint> cards, float x, float y, float width, float height);
+void draw_deck(std::unordered_map<int, GLuint> cards, float x, float y, float width, float height, int nb_cards);
 void draw_grid(float x, float y , float tileWidth, float tileHeight);
 
 void draw_cell(float x, float y, float tileWidth, float tileHeight, GLuint textureId =0);

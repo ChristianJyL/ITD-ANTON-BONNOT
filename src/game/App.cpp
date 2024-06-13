@@ -41,6 +41,10 @@ App::App() : _previousTime(0.0), _viewSize(2.0), _mouseX(0.0f), _mouseY(0.0f)
     textures["wasted"] = loadTexture(img::load(make_absolute_path("images/wasted.png", true), 4, true));
     textures["victory"] = loadTexture(img::load(make_absolute_path("images/victory.png", true), 4, true));
 
+    cards[0] = loadTexture(img::load(make_absolute_path("images/pizzaMenu.png", true), 4, true));
+    cards[1] = loadTexture(img::load(make_absolute_path("images/bucketMenu.png", true), 4, true));
+    cards[2] = loadTexture(img::load(make_absolute_path("images/burgerMenu.png", true), 4, true));
+
     _mapWidth = static_cast<float>(image_map.width()) / 10.0f;
     _mapHeight = static_cast<float>(image_map.height()) / 10.0f;
     // data.addEnemy({13,4,0,1,0});    data.addEnemy({13,4,0,2,0});    data.addEnemy({13,4,0,1.5,0});    data.addEnemy({13,4,0,0.5f,0});
@@ -131,7 +135,7 @@ void App::render()
     draw_map(_xMin, 0.5f, TILE_WIDTH, TILE_HEIGHT, data, textures);
     draw_enemies(_xMin, _mapHeight - 1, data.enemies, 0.1, textures["costumer"]);
 
-    draw_projectiles(_xMin, _mapHeight - 1, data.projectiles, 0.1, textures);
+    draw_projectiles(_xMin, _mapHeight - 1, data.projectiles, 0.08, textures);
 
     if (data.isCardSelected())
     {
@@ -153,7 +157,7 @@ void App::render()
         }
     }
 
-    draw_deck(_texture, _xMin, 1.0f, _mapWidth, _mapHeight - 1, NB_CARDS);
+    draw_deck(cards, _xMin, 1.0f, _mapWidth, _mapHeight - 1, NB_CARDS);
 
     if (_mouseX >= _xMin && _mouseX < _xMin + _mapWidth && _mouseY >= 0.5 && _mouseY < 1)
     {

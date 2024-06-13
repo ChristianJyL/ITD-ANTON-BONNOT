@@ -55,37 +55,34 @@ void draw_quad_with_texture(GLuint textureId)
 
 void draw_one_card(GLuint textureId, float xOrigin, float yOrigin, float width, float height)
 {
-    // glEnable(GL_TEXTURE_2D);
-    // glBindTexture(GL_TEXTURE_2D, textureId);
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, textureId);
     glPushMatrix();
     glTranslatef(xOrigin, yOrigin, 0);
     glBegin(GL_QUADS);
-    glTexCoord2d(0, 0);
-    glVertex2f(0, 0);
-
-    glTexCoord2d(1, 0);
-    glVertex2f(width, 0);
-
-    glTexCoord2d(1, 1);
-    glVertex2f(width, -height);
-
     glTexCoord2d(0, 1);
+    glVertex2f(0, 0);
+    glTexCoord2d(1, 1);
+    glVertex2f(width, 0);
+    glTexCoord2d(1, 0);
+    glVertex2f(width, -height);
+    glTexCoord2d(0, 0);
     glVertex2f(0, -height);
     glEnd();
     glPopMatrix();
-    // glBindTexture(GL_TEXTURE_2D, 0);
-    // glDisable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, 0);
+    glDisable(GL_TEXTURE_2D);
 }
 
-void draw_deck(GLuint textureId, float xOrigin, float yOrigin, float width, float height, int nb_cards)
+void draw_deck(std::unordered_map<int, GLuint> cards, float xOrigin, float yOrigin, float width, float height, int nb_cards)
 { // mettre un vecteur de GLuint à terme pour les textures
     glPushMatrix();
     glTranslatef(xOrigin, yOrigin, 0);
     float increment = width / nb_cards;
     for (int i = 0; i < nb_cards; i++)
     {
-        glColor3f(1.0f, i % 2, 1.0f - i * 0.1f);
-        draw_one_card(textureId, i * increment, 0, increment, height);
+        glColor3f(1, 1, 1);
+        draw_one_card(cards[i], i * increment, 0, increment, height);
     }
     glPopMatrix();
 }
