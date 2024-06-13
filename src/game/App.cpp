@@ -18,7 +18,7 @@ static const int NB_CARDS = 3;
 
 std::unordered_map<std::string, GLuint> addTexture(std::unordered_map<std::string, GLuint> textures, std::string id, std::string image)
 {
-    textures[id] = loadTexture(img::load(make_absolute_path(image, true), 3, true));
+    textures[id] = loadTexture(img::load(make_absolute_path(image, true), 4, true));
     return textures;
 }
 
@@ -40,7 +40,7 @@ App::App() : _previousTime(0.0), _viewSize(2.0), _mouseX(0.0f), _mouseY(0.0f)
     textures = addTexture(textures, "towerLong", "images/towerLong.png");
     // textures = addTexture(textures, "costumer", "images/costumer.png");
     textures = addTexture(textures, "food", "images/food.png");
-    textures["costumer"] = loadTexture(img::load(make_absolute_path("images/costumer.png", true), 3, true));
+    textures["costumer"] = loadTexture(img::load(make_absolute_path("images/costumer.png", true), 4, true));
 
     // _woodTexture = loadTexture(wood_floor);
     _mapWidth = static_cast<float>(image_map.width()) / 10.0f;
@@ -271,6 +271,7 @@ void App::size_callback(int width, int height)
     }
 }
 
+<<<<<<< Updated upstream
 
 
 void App::renderMainMenu(){
@@ -301,3 +302,8 @@ void App::renderWin(){
 }
 
 
+=======
+bool App::isRunning() {
+    return data.isAlive;
+}
+>>>>>>> Stashed changes

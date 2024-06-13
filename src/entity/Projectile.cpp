@@ -50,6 +50,8 @@ bool Projectile::isArrived(const std::vector<Enemy>& enemies) const {
 
 void Projectile::draw_projectile(float scale, float size, GLuint texture) const
 {
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, texture);
     glPushMatrix();
@@ -68,7 +70,8 @@ void Projectile::draw_projectile(float scale, float size, GLuint texture) const
     glPopMatrix();
     glBindTexture(GL_TEXTURE_2D, 0);
     glDisable(GL_TEXTURE_2D);
-
+    glDisable(GL_BLEND);
+;
     // glPushMatrix();
     // glTranslatef(x * scale, - y * scale, 0);
     // glColor3f(0.0f, 0.0f, 1.0f);

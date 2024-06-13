@@ -8,6 +8,8 @@ void Enemy::moveY(float dy){
 }
 
 void Enemy::draw_enemy(float scale, float size, GLuint texture) const{
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, texture);
     glPushMatrix();
@@ -27,6 +29,7 @@ void Enemy::draw_enemy(float scale, float size, GLuint texture) const{
     glPopMatrix();
     glBindTexture(GL_TEXTURE_2D, 0);
     glDisable(GL_TEXTURE_2D);
+    glDisable(GL_BLEND);
 
     // glPushMatrix();
     // glTranslatef(x*scale, -y*scale, 0);

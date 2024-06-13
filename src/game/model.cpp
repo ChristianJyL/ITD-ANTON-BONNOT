@@ -5,7 +5,8 @@
 
 GLuint loadTexture(uint8_t const* data, int width, int height) {
     GLuint textureId {};
-
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_TEXTURE_2D);
     glGenTextures(1, &textureId);
     glBindTexture(GL_TEXTURE_2D, textureId);
@@ -16,7 +17,7 @@ GLuint loadTexture(uint8_t const* data, int width, int height) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
     // Error on MACOS (segmentation fault) when using glGenerateMipmap
     // glGenerateMipmap(GL_TEXTURE_2D);
     glDisable(GL_TEXTURE_2D);
@@ -102,6 +103,8 @@ void draw_grid(float xOrigin, float yOrigin, float tileWidth, float tileHeight){
 }
 
 void draw_cell(float xOrigin, float yOrigin, float tileWidth, float tileHeight, GLuint textureId){
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, textureId);
     glPushMatrix();
@@ -119,6 +122,7 @@ void draw_cell(float xOrigin, float yOrigin, float tileWidth, float tileHeight, 
     glPopMatrix();
     glBindTexture(GL_TEXTURE_2D, 0);
     glDisable(GL_TEXTURE_2D);
+    glDisable(GL_BLEND);
 }
 
 void draw_map(float x, float y, float tileWidth, float tileHeight, const Data& data, std::unordered_map<std::string, GLuint> textures){ //Dessine la map en fonction de la grille de data (remplacer les couleurs avec les textures à terme)
@@ -141,18 +145,22 @@ void draw_map(float x, float y, float tileWidth, float tileHeight, const Data& d
                 // glColor3f(data.start.r / 255.0f, data.start.g / 255.0f, data.start.b / 255.0f);
                 break;
             case 3:
+                draw_cell(i * tileWidth, - j * tileHeight, tileWidth, tileHeight, textures["carpet"]);
                 texture = textures["manager"];
                 // glColor3f(data.end.r / 255.0f, data.end.g / 255.0f, data.end.b / 255.0f);
                 break;
             case 4:
+                draw_cell(i * tileWidth, - j * tileHeight, tileWidth, tileHeight, textures["floor"]);
                 // glColor3f(1.0f, 0.8f, 0.0f);
                 texture = textures["towerSlow"];
                 break;
             case 5:
+                draw_cell(i * tileWidth, - j * tileHeight, tileWidth, tileHeight, textures["floor"]);
                 // glColor3f(1.0f, 0.5f, 0.0f);
                 texture = textures["towerShort"];
                 break;
             case 6:
+                draw_cell(i * tileWidth, - j * tileHeight, tileWidth, tileHeight, textures["floor"]);
                 // glColor3f(1.0f, 0.1f, 0.0f);
                 texture = textures["towerLong"];
                 break;
