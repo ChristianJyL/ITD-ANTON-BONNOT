@@ -84,22 +84,13 @@ void App::update()
     const double currentTime{glfwGetTime()};
     const double elapsedTime{currentTime - _previousTime};
     _previousTime = currentTime;
-    static double lastTime = 0.0;
 
-    if (currentTime - lastTime > 2.0)
-    {
-        lastTime = currentTime;
-        data.addEnemy(Enemy(0,8, 0, 1, 1, 15));
-        data.addEnemy(Enemy(10, 15, 0, 1, 1, 10));
-    }
+    data.alternateSpawn(currentTime);
     data.moveEnemies(elapsedTime);
     data.moveProjectiles(elapsedTime);
     data.attackEnemies(currentTime);
 
     render();
-
-    //_angle += 10.0f * elapsedTime;
-    // _angle = std::fmod(_angle, 360.0f);
 }
 
 void App::render()

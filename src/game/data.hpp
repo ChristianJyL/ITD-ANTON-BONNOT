@@ -27,9 +27,10 @@ struct Data{
     std::vector<Projectile> projectiles;
     Graph::WeightedGraph graph;
     std::unordered_map<int, std::pair<int, int>> coordNodes;
-    std::vector<int> entries;
     std::unordered_map<int, std::vector<int>> shortestPaths;
+    std::vector<int> entries;
     int exit;
+    int spawnIndex = 0; //utilisé pour alterner les spawns
 
     int width; // Largeur de la grille
     int height; // Hauteur de la grille
@@ -37,7 +38,7 @@ struct Data{
     glm::u8vec3 end; // Couleur de la fin du chemin
     glm::u8vec3 path; // Couleur du chemin
     int cardSelected = -1;
-    int money = 100;
+    int money = 200;
 
     bool isAlive = true;
 
@@ -61,7 +62,11 @@ struct Data{
     TileType getCardType(int index); // Récupère le type de la carte à l'index donné
     Tower getTower(int x, int y) const; // Récupère une tour
 
-    void addEnemy(Enemy enemy); // Ajoute un ennemi
+    void addEnemy(int spawnIndex, float x, float y, int hp, float speed, int reward); // Ajoute un ennemi
+    void addEnemies(); // Ajoute des ennemis
+    void alternateSpawn(double currentTime);
+
+
     void killEnemy(Enemy const& enemy); // Tue un ennemi
     void moveEnemy(Enemy &enemy, std::vector<int> const& pathList, float time); // Déplace un ennemi
     void moveEnemies(float time); // Déplace tous les ennemis

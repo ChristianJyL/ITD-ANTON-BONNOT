@@ -1,18 +1,6 @@
 #include "data.hpp"
 
-
-/*struct Data{
-    std::vector<int> grid; // 0 = empty, 1 = path, 2 = input, 3 = output  | Liste 2D de la grille
-    Graph::WeightedGraph graph;
-    std::unordered_map<int, std::pair<int, int>> coordNodes;
-
-    int width; // Largeur de la grille
-    int height; // Hauteur de la grille
-    glm::u8vec3 start; // Couleur du début du chemin
-    glm::u8vec3 end; // Couleur de la fin du chemin
-    glm::u8vec3 path; // Couleur du chemin
-*/
-
+//GETTERS&SETTERS&PRINT-------------------------------------------------------------------------------------------------------
 void Data::setCell(int x, int y, TileType value) {
     grid[y * width + x] = value;
 }
@@ -27,6 +15,30 @@ void Data::initGrid(int width, int height) {
     grid.resize(width * height, TileType::Empty);
 }
 
+bool Data::isCardSelected() const {
+    return cardSelected != -1;
+}
+
+void Data::selectCard(int index) {
+    cardSelected = index;
+}
+
+void Data::unselectCard() {
+    cardSelected = -1;
+}
+
+void Data::printGrid() const {
+    for (int y = 0; y < height; ++y)
+    {
+        for (unsigned int x = 0; x < width; ++x)
+        {
+            std::cout << getCell(x, y);
+        }
+        std::cout << std::endl;
+    }
+}
+
+//ITD----------------------------------------------------------------------------------------------------------------
 void Data::loadFromITD(std::filesystem::path const& pathFile) {
     ITD itd;
     if (!isValidITD(pathFile, itd)) {
@@ -68,17 +80,6 @@ void Data::loadFromITD(std::filesystem::path const& pathFile) {
     }
 }
 
-void Data::printGrid() const {
-    for (int y = 0; y < height; ++y)
-    {
-        for (unsigned int x = 0; x < width; ++x)
-        {
-            std::cout << getCell(x, y);
-        }
-        std::cout << std::endl;
-    }
-}
-
 bool Data::isEverythingValid() const {
     for (const auto& node : coordNodes) {
         int nodeIndex = node.first;
@@ -92,18 +93,40 @@ bool Data::isEverythingValid() const {
     return true;
 }
 
-bool Data::isCardSelected() const {
-    return cardSelected != -1;
+//GRAPH&DIJKSTRA&PATH-------------------------------------------------------------------------------------------------------
+int Data::getNodeWithCoord(int x, int y) {
+    for (const auto& node : coordNodes) {
+        if (node.second.first == x && node.second.second == y) {
+            return node.first;
+        }
+    }
+    return -1;
 }
 
-void Data::selectCard(int index) {
-    cardSelected = index;
+std::pair<int,int> Data::getCoordWithNode(int node) {
+    return coordNodes[node];
 }
 
-void Data::unselectCard() {
-    cardSelected = -1;
+std::vector<int> Data::getShortestPath(int entry) const{
+    std::unordered_map<int, std::pair<float, int>> dijkstraTemp;
+    dijkstraTemp = dijkstra(graph,entry, exit);
+    std::vector<int> path;
+    int currentNode = exit;
+    while (currentNode != entry){
+        path.push_back(currentNode);
+        currentNode = dijkstraTemp[currentNode].second;
+    }
+    path.push_back(entry);
+    std::reverse(path.begin(), path.end());
+    return path;
 }
 
+void Data::putShortestPaths(){
+    for (int entry : entries) {
+        shortestPaths[entry] = getShortestPath(entry);
+    }
+}
+//TOWER----------------------------------------------------------------------------------------------------------------
 bool Data::placeCard(int x, int y) {
     if (cardSelected == -1) {
         return false;
@@ -147,44 +170,55 @@ Tower Data::getTower(int x, int y) const {
     }
 }
 
-
-
-void Data::addEnemy(Enemy enemy) {
-    enemies.push_back(enemy);
-}
-
-int Data::getNodeWithCoord(int x, int y) {
-    for (const auto& node : coordNodes) {
-        if (node.second.first == x && node.second.second == y) {
-            return node.first;
+//PROJECTILE-----------------------------------------------------------------------------------------------------------
+void Data::moveProjectiles(float time) {
+    for (int i = 0; i < projectiles.size();) {
+        if (!projectiles[i].isTargetAlive(enemies)) {
+            projectiles.erase(projectiles.begin() + i);  // Supprimer le projectile si la cible est morte
+        } else if (projectiles[i].isArrived(enemies)) {
+            for (int j = 0; j < enemies.size(); ++j) {
+                if (enemies[j].uniqueId == projectiles[i].targetId) {
+                    enemies[j].hp -= projectiles[i].damage;
+                    break;
+                }
+            }
+            projectiles.erase(projectiles.begin() + i);  // Supprimer le projectile après avoir infligé des dégâts
+        } else {
+            projectiles[i].move(time, enemies);
+            ++i;
         }
     }
-    return -1;
 }
 
-std::pair<int,int> Data::getCoordWithNode(int node) {
-    return coordNodes[node];
+
+//ENEMY----------------------------------------------------------------------------------------------------------------
+void Data::addEnemy(int spawnIndex, float x, float y, int hp, float speed, int reward) {
+    enemies.push_back(Enemy(spawnIndex, x, y, hp, speed, reward));
 }
 
-//A FAIRE : pour chaque entrée, le chemin n'est pas le même pour chaque entrée...
-std::vector<int> Data::getShortestPath(int entry) const{
-    std::unordered_map<int, std::pair<float, int>> dijkstraTemp;
-    dijkstraTemp = dijkstra(graph,entry, exit);
-    std::vector<int> path;
-    int currentNode = exit;
-    while (currentNode != entry){
-        path.push_back(currentNode);
-        currentNode = dijkstraTemp[currentNode].second;
+void Data::addEnemies() {
+    int entry = entries[spawnIndex];
+    if (spawnIndex % 2 == 0) {
+        addEnemy(entry, coordNodes[entry].first, coordNodes[entry].second, 25, 1, 20);
+    } else {
+        addEnemy(entry, coordNodes[entry].first, coordNodes[entry].second, 15, 0.8, 50);
     }
-    path.push_back(entry);
-    std::reverse(path.begin(), path.end());
-    return path;
+    spawnIndex = (spawnIndex + 1) % entries.size(); //on alterne les spawns
 }
 
-void Data::putShortestPaths(){
-    for (int entry : entries) {
-        shortestPaths[entry] = getShortestPath(entry);
+void Data::alternateSpawn(double currentTime) {
+    static double lastTime = 0.0;
+    static double spawnCounter = 0.0;
+
+    if (currentTime - lastTime > 2.0 && spawnCounter < 20.0){
+        lastTime = currentTime;
+        spawnCounter += 2.0;
+        addEnemies();
     }
+}
+
+void Data::killEnemy(Enemy const& enemy) {
+    enemies.erase(std::remove(enemies.begin(), enemies.end(), enemy), enemies.end());
 }
 
 void Data::moveEnemy(Enemy &enemy, std::vector<int> const& pathList, float time) {
@@ -212,10 +246,6 @@ void Data::moveEnemy(Enemy &enemy, std::vector<int> const& pathList, float time)
     }
 }
 
-void Data::killEnemy(Enemy const& enemy) {
-    enemies.erase(std::remove(enemies.begin(), enemies.end(), enemy), enemies.end());
-}
-
 void Data::moveEnemies(float time) { //on bouge tous les ennemis
     for (Enemy &enemy: enemies) {
         moveEnemy(enemy, shortestPaths.at(enemy.spawnIndex), time);
@@ -232,23 +262,3 @@ void Data::attackEnemies(float currentTime){
         tower.attack(enemies, currentTime, projectiles);
     }
 }
-
-void Data::moveProjectiles(float time) {
-    for (int i = 0; i < projectiles.size();) {
-        if (!projectiles[i].isTargetAlive(enemies)) {
-            projectiles.erase(projectiles.begin() + i);  // Supprimer le projectile si la cible est morte
-        } else if (projectiles[i].isArrived(enemies)) {
-            for (int j = 0; j < enemies.size(); ++j) {
-                if (enemies[j].uniqueId == projectiles[i].targetId) {
-                    enemies[j].hp -= projectiles[i].damage;
-                    break;
-                }
-            }
-            projectiles.erase(projectiles.begin() + i);  // Supprimer le projectile après avoir infligé des dégâts
-        } else {
-            projectiles[i].move(time, enemies);
-            ++i;
-        }
-    }
-}
-
