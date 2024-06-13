@@ -271,7 +271,7 @@ void App::size_callback(int width, int height)
     }
 }
 
-<<<<<<< Updated upstream
+// <<<<<<< Updated upstream
 
 
 void App::renderMainMenu(){
@@ -302,7 +302,7 @@ void App::renderWin(){
 }
 
 
-=======
+// =======
 bool App::isRunning() {
     return data.isAlive;
 }
