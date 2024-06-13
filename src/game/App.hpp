@@ -6,6 +6,12 @@
 
 class App {
 public:
+    enum class GameState {
+        MainMenu,
+        InGame,
+        EndScreen
+    };
+
     App();
 
     void setup();
@@ -17,11 +23,13 @@ public:
     void scroll_callback(double xoffset, double yoffset);
     void cursor_position_callback(double xpos, double ypos);
     void size_callback(int width, int height);
-    bool isRunning() const;
+    void renderMainMenu();
+    void renderGameOver();
+    void renderWin();
 
 private:
     void render();
-
+    GameState gameState = GameState::MainMenu;
     int _width {};
     int _height {};
     double _previousTime {};
@@ -33,7 +41,6 @@ private:
     float _mapHeight {};
 
     Data data;
-
     float _mouseX, _mouseY;
 
     // Add your variables here

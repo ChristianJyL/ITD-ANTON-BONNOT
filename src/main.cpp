@@ -22,16 +22,6 @@ namespace {
 // Optional: limit the frame rate
 constexpr double TARGET_TIME_FOR_FRAME { 1.0 / 60.0 };
 
-enum class GameState {
-    MainMenu,
-    InGame,
-    EndScreen
-};
-
-GameState gameState = GameState::MainMenu;
-
-
-
 int main() {
     // Set an error callback to display glfw errors
     glfwSetErrorCallback([](int error, const char* description) {
@@ -96,10 +86,7 @@ int main() {
         // Get time (in second) at loop beginning
 		double startTime { glfwGetTime() };
 
-        if (app.isRunning()) {
-            // Render here
-            app.update();
-        }
+        app.update();
 
         // Swap front and back buffers
         glfwSwapBuffers(window);

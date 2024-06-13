@@ -74,6 +74,7 @@ struct Data{
     void attackEnemies(float currentTime); // Attaque les ennemis
     void moveProjectiles(float time);
 
+
 };
 
 

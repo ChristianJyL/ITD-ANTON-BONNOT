@@ -85,12 +85,40 @@ void App::update()
     const double elapsedTime{currentTime - _previousTime};
     _previousTime = currentTime;
 
-    data.alternateSpawn(currentTime);
-    data.moveEnemies(elapsedTime);
-    data.moveProjectiles(elapsedTime);
-    data.attackEnemies(currentTime);
+    switch (gameState) {
+        case GameState::MainMenu:
+            renderMainMenu();
+            break;
+        case GameState::InGame:
+            data.alternateSpawn(currentTime);
+            data.moveEnemies(elapsedTime);
+            data.moveProjectiles(elapsedTime);
+            data.attackEnemies(currentTime);
 
-    render();
+            //if all enemies are dead (après 20 secondes)
+            if (data.enemies.empty() && currentTime > 20)
+            {
+                gameState = GameState::EndScreen;
+            }
+            if (!data.isAlive)
+            {
+                gameState = GameState::EndScreen;
+            }
+
+            render();
+            break;
+        case GameState::EndScreen:
+            if (data.isAlive)
+            {
+                renderWin();
+            }
+            else
+            {
+                renderGameOver();
+            }
+            break;
+    }
+
 }
 
 void App::render()
@@ -140,29 +168,22 @@ void App::render()
         draw_hovered_card(_xMin + data.cardSelected * (3.0f / NB_CARDS), 1.0f, 3.0f / NB_CARDS, 0.5f);
     }
 
-    // Without set precision
-    // const std::string angle_label_text { "Angle: " + std::to_string(_angle) };
-    // With c++20 you can use std::format
-    // const std::string angle_label_text { std::format("Angle: {:.2f}", _angle) };
-
-    // Using stringstream to format the string with fixed precision
-    // std::string angle_label_text {};
-    // std::stringstream stream {};
-    // stream << std::fixed << "Angle: " << std::setprecision(2) << _angle;
-    // angle_label_text = stream.str();
-
-    // TextRenderer.Label(angle_label_text.c_str(), _width / 2, _height - 4, SimpleText::CENTER);
-
-    // TextRenderer.Render();
 }
 
-void App::key_callback(int /*key*/, int /*scancode*/, int /*action*/, int /*mods*/)
+void App::key_callback(int key, int scancode, int action, int mods)
 {
+    if (action == GLFW_PRESS) {
+        if (gameState == GameState::MainMenu && key == GLFW_KEY_ENTER) {
+            gameState = GameState::InGame;
+        } else if (gameState == GameState::EndScreen && key == GLFW_KEY_ENTER) {
+            glfwSetWindowShouldClose(glfwGetCurrentContext(), GLFW_TRUE);
+        }
+    }
 }
 
 void App::mouse_button_callback(int button, int action, int mods)
 {
-    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
+    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS && gameState == GameState::InGame)
     {
         // Le bouton gauche de la souris a été pressé
         double xpos, ypos;
@@ -251,6 +272,32 @@ void App::size_callback(int width, int height)
 }
 
 
-bool App::isRunning() const {
-    return data.isAlive;
+
+void App::renderMainMenu(){
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    TextRenderer.Label("Main Menu", 640, 320, SimpleText::CENTER);
+    TextRenderer.Label("Press Enter to Start", 643, 360, SimpleText::CENTER);
+    TextRenderer.Render();
 }
+
+void App::renderGameOver(){
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    TextRenderer.Label("Game Over", 640, 320, SimpleText::CENTER);
+    TextRenderer.Label("Press Enter to close the game", 643, 360, SimpleText::CENTER);
+    TextRenderer.Render();
+}
+
+void App::renderWin(){
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    TextRenderer.Label("You Win!", 640, 320, SimpleText::CENTER);
+    TextRenderer.Label("Press Enter to close the game", 643, 320, SimpleText::CENTER);
+    TextRenderer.Render();
+}
+
+
