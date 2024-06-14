@@ -210,10 +210,24 @@ void Data::alternateSpawn(double currentTime) {
     static double lastTime = 0.0;
     static double spawnCounter = 0.0;
 
-    if (currentTime - lastTime > 2.0 && spawnCounter < 20.0){
-        lastTime = currentTime;
-        spawnCounter += 2.0;
-        addEnemies();
+    if (waveCount < TOTAL_WAVES) {
+        if (spawning) {
+            if (spawnCounter < 20.0 && currentTime - lastTime > 2.0) {
+                lastTime = currentTime;
+                spawnCounter += 2.0;
+                addEnemies();
+            } else if (spawnCounter >= 20.0) {
+                spawning = false;
+                spawnCounter = 0.0;
+                lastTime = currentTime;
+            }
+        } else {
+            if (currentTime - lastTime > 10.0) {
+                spawning = true;
+                waveCount++;
+                lastTime = currentTime;
+            }
+        }
     }
 }
 

@@ -10,6 +10,8 @@
 #include "other/utils.hpp"
 #include "entity/Projectile.hpp"
 
+#define TOTAL_WAVES 5
+
 enum TileType {
     Empty = 0,
     Path = 1,
@@ -30,7 +32,9 @@ struct Data{
     std::unordered_map<int, std::vector<int>> shortestPaths;
     std::vector<int> entries;
     int exit;
-    int spawnIndex = 0; //utilisé pour alterner les spawns
+    int spawnIndex {0}; //utilisé pour alterner les spawns
+    bool spawning = true;
+    int waveCount {0};
 
     int width; // Largeur de la grille
     int height; // Hauteur de la grille
@@ -39,6 +43,7 @@ struct Data{
     glm::u8vec3 path; // Couleur du chemin
     int cardSelected = -1;
     int money = 200000;
+
 
     bool isAlive = true;
 

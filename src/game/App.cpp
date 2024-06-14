@@ -99,7 +99,7 @@ void App::update()
         data.attackEnemies(currentTime);
 
         // if all enemies are dead (après 20 secondes)
-        if (data.enemies.empty() && currentTime > 20)
+        if (data.enemies.empty() && data.waveCount >= TOTAL_WAVES)
         {
             gameState = GameState::EndScreen;
         }
