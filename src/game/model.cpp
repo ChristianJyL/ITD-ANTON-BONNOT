@@ -142,7 +142,7 @@ void draw_map(float x, float y, float tileWidth, float tileHeight, const Data &d
             switch (data.getCell(i, j))
             {
             case 1:
-                texture = textures["carpet"];
+                texture = textures["tile"];
                 break;
             case 2:
                 texture = textures["carpet"];

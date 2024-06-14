@@ -40,6 +40,7 @@ App::App() : _previousTime(0.0), _viewSize(2.0), _mouseX(0.0f), _mouseY(0.0f)
     textures["homepage"] = loadTexture(img::load(make_absolute_path("images/homepage.png", true), 4, true));
     textures["wasted"] = loadTexture(img::load(make_absolute_path("images/wasted.png", true), 4, true));
     textures["victory"] = loadTexture(img::load(make_absolute_path("images/victory.png", true), 4, true));
+    textures["tile"] = loadTexture(img::load(make_absolute_path("images/tile.png", true), 4, true));
 
     cards[0] = loadTexture(img::load(make_absolute_path("images/pizzaMenu.png", true), 4, true));
     cards[1] = loadTexture(img::load(make_absolute_path("images/bucketMenu.png", true), 4, true));
