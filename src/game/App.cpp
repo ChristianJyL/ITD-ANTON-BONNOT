@@ -154,7 +154,7 @@ void App::render()
         if (data.isCardSelected())
         {
             int Range = getTowerRange(data.cardSelected);
-            draw_hovered_tower(_xMin + tileX * TILE_WIDTH, 0.5f - tileY * TILE_HEIGHT, TILE_WIDTH, TILE_HEIGHT, Range);
+            draw_hovered_tower(_xMin + tileX * TILE_WIDTH, 0.5f - tileY * TILE_HEIGHT, TILE_WIDTH, TILE_HEIGHT, Range, textures["towerSlow"]);
         }
     }
 
@@ -170,6 +170,8 @@ void App::render()
     {
         draw_hovered_card(_xMin + data.cardSelected * (3.0f / NB_CARDS), 1.0f, 3.0f / NB_CARDS, 0.5f);
     }
+
+    draw_menu(textures["pizza"], 1080, 0, 200, 720);
 }
 
 void App::key_callback(int key, int scancode, int action, int mods)

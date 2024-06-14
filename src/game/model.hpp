@@ -23,8 +23,8 @@ void draw_grid_available(float x, float y, float tileWidth, float tileHeight, co
 
 void draw_hovered_cell(float x, float y, float width, float height);
 void draw_hovered_card(float x, float y, float width, float height);
-void draw_hovered_tower(float xOrigin, float yOrigin, float width, float height , int range);
+void draw_hovered_tower(float xOrigin, float yOrigin, float width, float height , int range, GLuint texture);
 
 void draw_enemies(float xOrigin, double yOrigin, std::vector<Enemy> enemies, float size, GLuint texture);
 void draw_projectiles(float xOrigin, float yOrigin, const std::vector<Projectile>& projectiles, float size, std::unordered_map<std::string, GLuint> textures);
-
+void draw_menu(GLuint textureId, float xOrigin, float yOrigin, float width, float height);
