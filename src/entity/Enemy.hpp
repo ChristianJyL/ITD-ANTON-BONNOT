@@ -28,5 +28,8 @@ struct Enemy{
         return id++;
     }
 
+    void hpbar (){
+        
+    }
 
 };

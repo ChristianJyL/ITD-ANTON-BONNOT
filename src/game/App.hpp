@@ -27,6 +27,7 @@ public:
     void renderGameOver();
     void renderWin();
     void display_money(int money);
+    void display_score(int score);
 
 private:
     void render();
@@ -51,4 +52,5 @@ private:
     float _angle {};
 
     SimpleText TextRenderer {};
+    SimpleText TextRenderer2 {};
 };

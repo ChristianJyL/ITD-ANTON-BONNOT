@@ -11,6 +11,7 @@
 #include "simpletext.h"
 #include "other/utils.hpp"
 #include "model.hpp"
+#include <string>
 
 static const float TILE_WIDTH = 0.1;
 static const float TILE_HEIGHT = 0.1;
@@ -41,6 +42,8 @@ App::App() : _previousTime(0.0), _viewSize(2.0), _mouseX(0.0f), _mouseY(0.0f)
     textures["wasted"] = loadTexture(img::load(make_absolute_path("images/wasted.png", true), 4, true));
     textures["victory"] = loadTexture(img::load(make_absolute_path("images/victory.png", true), 4, true));
     textures["tile"] = loadTexture(img::load(make_absolute_path("images/tile.png", true), 4, true));
+    textures["menu"] = loadTexture(img::load(make_absolute_path("images/menu.png", true), 4, true));
+    textures["pause"] = loadTexture(img::load(make_absolute_path("images/pause.png", true), 4, true));
 
     cards[0] = loadTexture(img::load(make_absolute_path("images/pizzaMenu.png", true), 4, true));
     cards[1] = loadTexture(img::load(make_absolute_path("images/bucketMenu.png", true), 4, true));
@@ -124,6 +127,24 @@ void App::update()
     }
 }
 
+void App::display_money(int money) {
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    std::string moneyStr = std::to_string(money);
+    TextRenderer.Label(moneyStr.c_str(), 1200, 150, SimpleText::CENTER);
+    TextRenderer.Render();
+}
+
+
+
+void App::display_score(int score) {
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    std::string scoreStr = std::to_string(score);
+    TextRenderer.Label(scoreStr.c_str(), 1177, 325, SimpleText::CENTER);
+    TextRenderer.Render();
+}
+
 void App::render()
 {
     // Clear the color and depth buffers of the frame buffer
@@ -171,7 +192,10 @@ void App::render()
         draw_hovered_card(_xMin + data.cardSelected * (3.0f / NB_CARDS), 1.0f, 3.0f / NB_CARDS, 0.5f);
     }
 
-    draw_menu(textures["pizza"], 1080, 0, 200, 720);
+    draw_menu(textures["menu"], _xMin + _mapWidth, 1, 0.55, 2);
+    draw_button(_xMin + _mapWidth + 0.175, -0.15, 2 * TILE_WIDTH, 2 * TILE_HEIGHT, textures["pause"], 0);
+    display_money(data.money);
+    display_score(data.waveCount);
 }
 
 void App::key_callback(int key, int scancode, int action, int mods)
@@ -290,11 +314,14 @@ void App::renderMainMenu()
     glPushMatrix();
     glTranslatef(-0.5, -0.5, 0);
     glBegin(GL_QUADS);
-        glTexCoord2d(1, 1); 
-        glVertex2f(2.3f, 1.5f);
-        glTexCoord2d(0, 1); glVertex2f(-1.3f, 1.5f);
-        glTexCoord2d(0, 0); glVertex2f(-1.3f, -0.5f);
-        glTexCoord2d(1, 0); glVertex2f(2.3f, -0.5f);
+    glTexCoord2d(1, 1);
+    glVertex2f(2.3f, 1.5f);
+    glTexCoord2d(0, 1);
+    glVertex2f(-1.3f, 1.5f);
+    glTexCoord2d(0, 0);
+    glVertex2f(-1.3f, -0.5f);
+    glTexCoord2d(1, 0);
+    glVertex2f(2.3f, -0.5f);
     glEnd();
     glPopMatrix();
     glBindTexture(GL_TEXTURE_2D, 0);
@@ -316,19 +343,23 @@ void App::renderGameOver()
     glPushMatrix();
     glTranslatef(-0.5, -0.5, 0);
     glBegin(GL_QUADS);
-        glTexCoord2d(1, 1); 
-        glVertex2f(2.3f, 1.5f);
-        glTexCoord2d(0, 1); glVertex2f(-1.3f, 1.5f);
-        glTexCoord2d(0, 0); glVertex2f(-1.3f, -0.5f);
-        glTexCoord2d(1, 0); glVertex2f(2.3f, -0.5f);
+    glTexCoord2d(1, 1);
+    glVertex2f(2.3f, 1.5f);
+    glTexCoord2d(0, 1);
+    glVertex2f(-1.3f, 1.5f);
+    glTexCoord2d(0, 0);
+    glVertex2f(-1.3f, -0.5f);
+    glTexCoord2d(1, 0);
+    glVertex2f(2.3f, -0.5f);
     glEnd();
     glPopMatrix();
     glBindTexture(GL_TEXTURE_2D, 0);
     glDisable(GL_TEXTURE_2D);
 
-    // TextRenderer.Label("Game Over", 640, 320, SimpleText::CENTER);
-    // TextRenderer.Label("Press Enter to close the game", 643, 360, SimpleText::CENTER);
-    // TextRenderer.Render();
+    TextRenderer.Label("Fired at round :", 640, 500, SimpleText::CENTER);
+    std::string scoreStr = std::to_string(data.waveCount);
+    TextRenderer.Label(scoreStr.c_str(), 643, 515, SimpleText::CENTER);
+    TextRenderer.Render();
 }
 
 void App::renderWin()
@@ -337,23 +368,27 @@ void App::renderWin()
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
-glEnable(GL_TEXTURE_2D);
-glColor3f(1, 1, 1);
+    glEnable(GL_TEXTURE_2D);
+    glColor3f(1, 1, 1);
     glBindTexture(GL_TEXTURE_2D, textures["victory"]);
     glPushMatrix();
     glTranslatef(-0.5, -0.5, 0);
     glBegin(GL_QUADS);
-        glTexCoord2d(1, 1); 
-        glVertex2f(2.3f, 1.5f);
-        glTexCoord2d(0, 1); glVertex2f(-1.3f, 1.5f);
-        glTexCoord2d(0, 0); glVertex2f(-1.3f, -0.5f);
-        glTexCoord2d(1, 0); glVertex2f(2.3f, -0.5f);
+    glTexCoord2d(1, 1);
+    glVertex2f(2.3f, 1.5f);
+    glTexCoord2d(0, 1);
+    glVertex2f(-1.3f, 1.5f);
+    glTexCoord2d(0, 0);
+    glVertex2f(-1.3f, -0.5f);
+    glTexCoord2d(1, 0);
+    glVertex2f(2.3f, -0.5f);
     glEnd();
     glPopMatrix();
     glBindTexture(GL_TEXTURE_2D, 0);
     glDisable(GL_TEXTURE_2D);
 
-    // TextRenderer.Label("You Win!", 640, 320, SimpleText::CENTER);
-    // TextRenderer.Label("Press Enter to close the game", 643, 320, SimpleText::CENTER);
+    // TextRenderer.Label("Score :", 640, 320, SimpleText::CENTER);
+    // std::string scoreStr = std::to_string(data.waveCount);
+    // TextRenderer.Label(scoreStr.c_str(), 643, 360, SimpleText::CENTER);
     // TextRenderer.Render();
 }

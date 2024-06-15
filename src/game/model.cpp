@@ -53,27 +53,6 @@ void draw_quad_with_texture(GLuint textureId)
     glDisable(GL_TEXTURE_2D);
 }
 
-void draw_menu(GLuint textureId, float xOrigin, float yOrigin, float width, float height)
-{
-    glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, textureId);
-    glPushMatrix();
-    glTranslatef(xOrigin, yOrigin, 0);
-    glBegin(GL_QUADS);
-    glTexCoord2d(0, 1);
-    glVertex2f(0, 0);
-    glTexCoord2d(1, 1);
-    glVertex2f(width, 0);
-    glTexCoord2d(1, 0);
-    glVertex2f(width, -height);
-    glTexCoord2d(0, 0);
-    glVertex2f(0, -height);
-    glEnd();
-    glPopMatrix();
-    glBindTexture(GL_TEXTURE_2D, 0);
-    glDisable(GL_TEXTURE_2D);
-}
-
 void draw_one_card(GLuint textureId, float xOrigin, float yOrigin, float width, float height)
 {
     glEnable(GL_TEXTURE_2D);
@@ -143,6 +122,56 @@ void draw_cell(float xOrigin, float yOrigin, float tileWidth, float tileHeight, 
     glVertex2f(tileWidth, -tileHeight);
     glTexCoord2d(0, 0);
     glVertex2f(0, -tileHeight);
+    glEnd();
+    glPopMatrix();
+    glBindTexture(GL_TEXTURE_2D, 0);
+    glDisable(GL_TEXTURE_2D);
+    glDisable(GL_BLEND);
+}
+
+void draw_menu(GLuint textureId, float xOrigin, float yOrigin, float width, float height)
+{
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, textureId);
+    glPushMatrix();
+    glTranslatef(xOrigin, yOrigin, 0);
+    glColor3f(1, 1, 1);
+    glBegin(GL_QUADS);
+    glTexCoord2d(0, 1);
+    glVertex2f(0, 0);
+    glTexCoord2d(1, 1);
+    glVertex2f(width, 0);
+    glTexCoord2d(1, 0);
+    glVertex2f(width, -height);
+    glTexCoord2d(0, 0);
+    glVertex2f(0, -height);
+    glEnd();
+    glPopMatrix();
+    glBindTexture(GL_TEXTURE_2D, 0);
+    glDisable(GL_TEXTURE_2D);
+}
+
+void draw_button(float xOrigin, float yOrigin, float width, float height, GLuint textureId, bool isPaused){
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, textureId);
+    glPushMatrix();
+    glTranslatef(xOrigin, yOrigin, 0);
+
+    if (isPaused){
+        glColor3f(1, 0, 0);
+    }
+
+    glBegin(GL_QUADS);
+    glTexCoord2d(0, 1);
+    glVertex2f(0, 0);
+    glTexCoord2d(1, 1);
+    glVertex2f(width, 0);
+    glTexCoord2d(1, 0);
+    glVertex2f(width, -height);
+    glTexCoord2d(0, 0);
+    glVertex2f(0, -height);
     glEnd();
     glPopMatrix();
     glBindTexture(GL_TEXTURE_2D, 0);
