@@ -151,17 +151,13 @@ void draw_menu(GLuint textureId, float xOrigin, float yOrigin, float width, floa
     glDisable(GL_TEXTURE_2D);
 }
 
-void draw_button(float xOrigin, float yOrigin, float width, float height, GLuint textureId, bool isPaused){
+void draw_button(float xOrigin, float yOrigin, float width, float height, GLuint textureId){
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, textureId);
     glPushMatrix();
     glTranslatef(xOrigin, yOrigin, 0);
-
-    if (isPaused){
-        glColor3f(1, 0, 0);
-    }
 
     glBegin(GL_QUADS);
     glTexCoord2d(0, 1);

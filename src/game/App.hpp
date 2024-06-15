@@ -53,4 +53,6 @@ private:
 
     SimpleText TextRenderer {};
     SimpleText TextRenderer2 {};
+
+    bool isPaused = false;
 };

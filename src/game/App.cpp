@@ -21,7 +21,6 @@ App::App() : _previousTime(0.0), _viewSize(2.0), _mouseX(0.0f), _mouseY(0.0f)
 {
     // load what needs to be loaded here (for example textures)
     img::Image image_map = {img::load(make_absolute_path("images/map3.png", true), 3, true)};
-    img::Image image_deck = {img::load(make_absolute_path("images/level.png", true), 3, true)};
     data.loadFromITD("data/map2.itd");
     data.putShortestPaths();
 
@@ -44,6 +43,7 @@ App::App() : _previousTime(0.0), _viewSize(2.0), _mouseX(0.0f), _mouseY(0.0f)
     textures["tile"] = loadTexture(img::load(make_absolute_path("images/tile.png", true), 4, true));
     textures["menu"] = loadTexture(img::load(make_absolute_path("images/menu.png", true), 4, true));
     textures["pause"] = loadTexture(img::load(make_absolute_path("images/pause.png", true), 4, true));
+    textures["play"] = loadTexture(img::load(make_absolute_path("images/play.png", true), 4, true));
 
     cards[0] = loadTexture(img::load(make_absolute_path("images/pizzaMenu.png", true), 4, true));
     cards[1] = loadTexture(img::load(make_absolute_path("images/bucketMenu.png", true), 4, true));
@@ -74,11 +74,11 @@ App::App() : _previousTime(0.0), _viewSize(2.0), _mouseX(0.0f), _mouseY(0.0f)
 void App::setup()
 {
     // Set the clear color to a nice blue
-    glClearColor(0.0f, 0.0f, 0.4f, 1.0f);
+    glClearColor(239/255.0f, 234/255.0f, 213/255.0f , 1.0f);
 
     // Setup the text renderer with blending enabled and white text color
     TextRenderer.ResetFont();
-    TextRenderer.SetColor(SimpleText::TEXT_COLOR, SimpleText::Color::WHITE);
+    TextRenderer.SetColor(SimpleText::TEXT_COLOR, SimpleText::Color::BLACK);
     TextRenderer.SetColorf(SimpleText::BACKGROUND_COLOR, 0.f, 0.f, 0.f, 0.f);
     TextRenderer.EnableBlending(true);
     _aspectRatio = (float)_width / (float)_height;
@@ -97,23 +97,28 @@ void App::update()
         renderMainMenu();
         break;
     case GameState::InGame:
-        data.alternateSpawn(currentTime);
-        data.moveEnemies(elapsedTime);
-        data.moveProjectiles(elapsedTime);
-        data.attackEnemies(currentTime);
+        if (!isPaused){
+            data.alternateSpawn(currentTime);
+            data.moveEnemies(elapsedTime);
+            data.moveProjectiles(elapsedTime);
+            data.attackEnemies(currentTime);
 
-        // if all enemies are dead (après 20 secondes)
-        if (data.enemies.empty() && data.waveCount >= TOTAL_WAVES)
-        {
-            gameState = GameState::EndScreen;
-        }
-        if (!data.isAlive)
-        {
-            gameState = GameState::EndScreen;
-        }
+            // if all enemies are dead (après 20 secondes)
+            if (data.enemies.empty() && data.waveCount >= TOTAL_WAVES)
+            {
+                gameState = GameState::EndScreen;
+            }
+            if (!data.isAlive)
+            {
+                gameState = GameState::EndScreen;
+            }
 
-        render();
-        break;
+            render();
+            break;
+        }  else {
+            render();
+            break;
+        }
     case GameState::EndScreen:
         if (data.isAlive)
         {
@@ -125,24 +130,6 @@ void App::update()
         }
         break;
     }
-}
-
-void App::display_money(int money) {
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    std::string moneyStr = std::to_string(money);
-    TextRenderer.Label(moneyStr.c_str(), 1200, 150, SimpleText::CENTER);
-    TextRenderer.Render();
-}
-
-
-
-void App::display_score(int score) {
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    std::string scoreStr = std::to_string(score);
-    TextRenderer.Label(scoreStr.c_str(), 1177, 325, SimpleText::CENTER);
-    TextRenderer.Render();
 }
 
 void App::render()
@@ -193,30 +180,36 @@ void App::render()
     }
 
     draw_menu(textures["menu"], _xMin + _mapWidth, 1, 0.55, 2);
-    draw_button(_xMin + _mapWidth + 0.175, -0.15, 2 * TILE_WIDTH, 2 * TILE_HEIGHT, textures["pause"], 0);
+
+    if (isPaused)
+    {
+        draw_button(_xMin + _mapWidth + 0.175, -0.15, 2 * TILE_WIDTH, 2 * TILE_HEIGHT, textures["play"]);
+    } else {
+        draw_button(_xMin + _mapWidth + 0.175, -0.15, 2 * TILE_WIDTH, 2 * TILE_HEIGHT, textures["pause"]);
+    }
     display_money(data.money);
     display_score(data.waveCount);
 }
 
-void App::key_callback(int key, int scancode, int action, int mods)
-{
-    if (action == GLFW_PRESS)
-    {
-        if (gameState == GameState::MainMenu && key == GLFW_KEY_ENTER)
-        {
+void App::key_callback(int key, int scancode, int action, int mods) {
+    if (action == GLFW_PRESS) {
+        if (gameState == GameState::MainMenu && key == GLFW_KEY_ENTER) {
             gameState = GameState::InGame;
-        }
-        else if (gameState == GameState::EndScreen && key == GLFW_KEY_ENTER)
-        {
+        } else if (gameState == GameState::EndScreen && key == GLFW_KEY_ENTER) {
             glfwSetWindowShouldClose(glfwGetCurrentContext(), GLFW_TRUE);
+        } else if (gameState == GameState::InGame && key == GLFW_KEY_SPACE) {
+            if (isPaused) {
+                isPaused = false;
+            } else {
+                isPaused = true;
+            }
         }
+
     }
 }
 
-void App::mouse_button_callback(int button, int action, int mods)
-{
-    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS && gameState == GameState::InGame)
-    {
+void App::mouse_button_callback(int button, int action, int mods) {
+    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS && gameState == GameState::InGame) {
         // Le bouton gauche de la souris a été pressé
         double xpos, ypos;
         // Récupère la position actuelle du curseur
@@ -227,48 +220,47 @@ void App::mouse_button_callback(int button, int action, int mods)
         std::cout << "x: " << x << " y: " << y << std::endl;
 
         // Détermine la partie de la fenêtre sur laquelle l'utilisateur a cliqué
-        if (x >= _xMin && x < _xMin + _mapWidth && y >= -1 && y < _mapHeight - 1)
-        { // Clique sur la map
-            if (!data.isCardSelected())
-            {
+        if (x >= _xMin && x < _xMin + _mapWidth && y >= -1 && y < _mapHeight - 1) { // Clique sur la map
+            if (!data.isCardSelected()) {
                 // Calculer la tuile sur laquelle l'utilisateur a cliqué
                 int tileX = static_cast<int>((x - _xMin) / TILE_WIDTH);
                 int tileY = static_cast<int>(-(y - (_mapHeight - 1)) / TILE_HEIGHT);
                 std::cout << "Tile clicked: (" << tileX << ", " << tileY << ")" << std::endl;
                 data.unselectCard();
-            }
-            else
-            {
+            } else {
                 // Placement de la tour selectionnée
                 int tileX = static_cast<int>((x - _xMin) / TILE_WIDTH);
                 int tileY = static_cast<int>(-(y - (_mapHeight - 1)) / TILE_HEIGHT);
                 std::cout << "Tile clicked: (" << tileX << ", " << tileY << ")" << std::endl;
-                if (data.placeCard(tileX, tileY))
-                {
+                if (data.placeCard(tileX, tileY)) {
                     std::cout << "Card placed" << std::endl;
-                }
-                else
-                {
+                } else {
                     std::cout << "Card not placed" << std::endl;
                 }
                 data.unselectCard();
             }
-        }
-        else if (x >= _xMin && x < _xMin + _mapWidth && y >= _mapHeight - 1 && y < 1)
-        { // Clique sur le deck
+        } else if (x >= _xMin && x < _xMin + _mapWidth && y >= _mapHeight - 1 && y < 1) { // Clique sur le deck
             std::cout << "Card" << std::endl;
             // Calculer la carte sur laquelle l'utilisateur a cliqué
-            int cardX = static_cast<int>((x - _xMin) / (_mapWidth / NB_CARDS)); // a voir pour utiliser une variable pour avoir quelque chose de variable
+            int cardX = static_cast<int>((x - _xMin) / (_mapWidth /
+                                                        NB_CARDS)); // a voir pour utiliser une variable pour avoir quelque chose de variable
             data.selectCard(cardX);
             std::cout << "Card clicked: " << data.cardSelected << std::endl;
-        }
-        else
-        { // Clique sur le menu/info (avec un else pour l'instant, à voir si on change)
-            std::cout << "menu/info" << std::endl;
+        } else { // Clique sur le menu/info (avec un else pour l'instant, à voir si on change)
+            if ( x >= _xMin + _mapWidth + 0.175 && x < _xMin + _mapWidth + 0.175 + 2 * TILE_WIDTH && y <= -0.15 && y > -0.15 - 2 * TILE_HEIGHT) {
+                if (isPaused) {
+                    isPaused = false;
+                } else {
+                    isPaused = true;
+                }
+            } else if ( x >= _xMin + _mapWidth + 0.183 && x < _xMin + _mapWidth + 0.183 + 2 * TILE_WIDTH && y <= -0.53 &&  y > -0.54 - 1.5* TILE_HEIGHT) {
+                glfwSetWindowShouldClose(glfwGetCurrentContext(), GLFW_TRUE);
+            }
             data.unselectCard();
         }
     }
 }
+
 
 void App::scroll_callback(double /*xoffset*/, double /*yoffset*/)
 {
@@ -356,9 +348,11 @@ void App::renderGameOver()
     glBindTexture(GL_TEXTURE_2D, 0);
     glDisable(GL_TEXTURE_2D);
 
+    TextRenderer.SetColor(SimpleText::TEXT_COLOR, SimpleText::Color::WHITE);
     TextRenderer.Label("Fired at round :", 640, 500, SimpleText::CENTER);
     std::string scoreStr = std::to_string(data.waveCount);
     TextRenderer.Label(scoreStr.c_str(), 643, 515, SimpleText::CENTER);
+    TextRenderer.Label("Press Enter to Quit", 640, 600, SimpleText::CENTER);
     TextRenderer.Render();
 }
 
@@ -391,4 +385,21 @@ void App::renderWin()
     // std::string scoreStr = std::to_string(data.waveCount);
     // TextRenderer.Label(scoreStr.c_str(), 643, 360, SimpleText::CENTER);
     // TextRenderer.Render();
+}
+
+void App::display_money(int money) {
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    std::string moneyStr = std::to_string(money);
+    TextRenderer.Label(moneyStr.c_str(), 1200, 150, SimpleText::CENTER);
+    TextRenderer.Render();
+}
+
+
+void App::display_score(int score) {
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    std::string scoreStr = std::to_string(score);
+    TextRenderer.Label(scoreStr.c_str(), 1177, 325, SimpleText::CENTER);
+    TextRenderer.Render();
 }
