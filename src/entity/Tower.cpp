@@ -13,18 +13,17 @@ void Tower::attack(std::vector<Enemy> &enemies , float currentTime , std::vector
         }
     }
 }
-Tower getTowerSlow(int x, int y) {
-    return Tower{x, y, 6, 1, 3,100};
-}
 
+//TYPE PROJETILE DAMAGE
+Tower getTowerSlow(int x, int y) {
+    return Tower{x, y, 15, 2, 2,250};
+}
 Tower getTowerShortRange(int x, int y) {
-    return Tower{x, y, 10, 2, 1,200};
+    return Tower{x, y, 9, 1, 1,500};
 }
 Tower getTowerLongRange(int x, int y) {
-    return Tower{x, y, 3, 5, 2,250};
+    return Tower{x, y, 30, 5, 3,750};
 }
-
-
 
 
 int getTowerRange(int cardSelected) {

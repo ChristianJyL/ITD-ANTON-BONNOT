@@ -199,9 +199,9 @@ void Data::addEnemy(int spawnIndex, float x, float y, int hp, float speed, int r
 void Data::addEnemies() {
     int entry = entries[spawnIndex];
     if (spawnIndex % 2 == 0) {
-        addEnemy(entry, coordNodes[entry].first, coordNodes[entry].second, 25, 1.5, 20);
+        addEnemy(entry, coordNodes[entry].first, coordNodes[entry].second,  15 +waveCount * 2, 1.5, 20 + waveCount * 1.2);
     } else {
-        addEnemy(entry, coordNodes[entry].first, coordNodes[entry].second, 15, 0.8, 50);
+        addEnemy(entry, coordNodes[entry].first, coordNodes[entry].second, 25 +waveCount * 2, 0.8, 30 + waveCount * 1.2);
     }
     spawnIndex = (spawnIndex + 1) % entries.size(); //on alterne les spawns
 }
@@ -222,7 +222,7 @@ void Data::alternateSpawn(double currentTime) {
                 lastTime = currentTime;
             }
         } else {
-            if (currentTime - lastTime > 10.0) {
+            if (currentTime - lastTime > 7.0) {
                 spawning = true;
                 waveCount++;
                 lastTime = currentTime;

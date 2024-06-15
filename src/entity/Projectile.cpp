@@ -1,4 +1,5 @@
 #include "Projectile.hpp"
+#include "Tower.hpp"
 
 bool Projectile::isTargetAlive(const std::vector<Enemy> &enemies) const
 {
@@ -64,11 +65,11 @@ int Projectile::getTypeTower() const
 { // On retourne le type de la tour en fonction des dégâts
     switch (damage)
     {
-    case 6:
+    case 15:
         return 0;
     case 10:
         return 1;
-    case 3:
+    case 30:
         return 2;
     default:
         return -1;

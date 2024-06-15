@@ -10,7 +10,7 @@
 #include "other/utils.hpp"
 #include "entity/Projectile.hpp"
 
-#define TOTAL_WAVES 5
+#define TOTAL_WAVES 10
 
 enum TileType {
     Empty = 0,
@@ -42,7 +42,7 @@ struct Data{
     glm::u8vec3 end; // Couleur de la fin du chemin
     glm::u8vec3 path; // Couleur du chemin
     int cardSelected = -1;
-    int money = 200;
+    int money = 400;
 
 
     bool isAlive = true;
