@@ -171,7 +171,7 @@ Tower Data::getTower(int x, int y) const {
 }
 
 //PROJECTILE-----------------------------------------------------------------------------------------------------------
-void Data::moveProjectiles(float time) {
+void Data::moveProjectiles(double time) {
     for (int i = 0; i < projectiles.size();) {
         if (!projectiles[i].isTargetAlive(enemies)) {
             projectiles.erase(projectiles.begin() + i);  // Supprimer le projectile si la cible est morte
@@ -235,7 +235,7 @@ void Data::killEnemy(Enemy const& enemy) {
     enemies.erase(std::remove(enemies.begin(), enemies.end(), enemy), enemies.end());
 }
 
-void Data::moveEnemy(Enemy &enemy, std::vector<int> const& pathList, float time) {
+void Data::moveEnemy(Enemy &enemy, std::vector<int> const& pathList, double time) {
     std::pair<int, int> nextStepCoords = coordNodes[pathList[enemy.currentPathIndex + 1]]; //on va chercher les coordonnées du prochain noeud
 
     // vecteur normalisé pour uniquement la direction
@@ -264,7 +264,7 @@ void Data::moveEnemy(Enemy &enemy, std::vector<int> const& pathList, float time)
     }
 }
 
-void Data::moveEnemies(float time) { //on bouge tous les ennemis
+void Data::moveEnemies(double time) { //on bouge tous les ennemis
     for (Enemy &enemy: enemies) {
         moveEnemy(enemy, shortestPaths.at(enemy.spawnIndex), time);
         if (enemy.hp <= 0) {
@@ -275,7 +275,7 @@ void Data::moveEnemies(float time) { //on bouge tous les ennemis
     }
 }
 
-void Data::attackEnemies(float currentTime){
+void Data::attackEnemies(double currentTime){
     for (Tower &tower : towers) {
         tower.attack(enemies, currentTime, projectiles);
     }

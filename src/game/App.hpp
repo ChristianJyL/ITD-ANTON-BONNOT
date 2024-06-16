@@ -55,4 +55,6 @@ private:
     SimpleText TextRenderer2 {};
 
     bool isPaused = false;
+
+    void display_warning(int life);
 };

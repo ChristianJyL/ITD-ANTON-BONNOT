@@ -73,11 +73,11 @@ struct Data{
 
 
     void killEnemy(Enemy const& enemy); // Tue un ennemi
-    void moveEnemy(Enemy &enemy, std::vector<int> const& pathList, float time); // Déplace un ennemi
-    void moveEnemies(float time); // Déplace tous les ennemis
+    void moveEnemy(Enemy &enemy, std::vector<int> const& pathList, double time); // Déplace un ennemi
+    void moveEnemies(double time); // Déplace tous les ennemis
 
-    void attackEnemies(float currentTime); // Attaque les ennemis
-    void moveProjectiles(float time);
+    void attackEnemies(double currentTime); // Attaque les ennemis
+    void moveProjectiles(double time);
 
 
 };

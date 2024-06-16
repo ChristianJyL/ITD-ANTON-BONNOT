@@ -1,13 +1,9 @@
 #include "App.hpp"
 #include "data.hpp"
-
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
 #include <img/img.hpp>
-
-#include <sstream>
 #include <iostream>
-
 #include "simpletext.h"
 #include "other/utils.hpp"
 #include "view.hpp"
@@ -36,7 +32,8 @@ App::App() : _previousTime(0.0), _viewSize(2.0), _mouseX(0.0f), _mouseY(0.0f)
     textures["pizza"] = loadTexture(img::load(make_absolute_path("images/pizza.png", true), 4, true));
     textures["bucket"] = loadTexture(img::load(make_absolute_path("images/bucket.png", true), 4, true));
     textures["burger"] = loadTexture(img::load(make_absolute_path("images/burger.png", true), 4, true));
-    textures["costumer"] = loadTexture(img::load(make_absolute_path("images/costumer.png", true), 4, true));
+    textures["costumer"] = loadTexture(img::load(make_absolute_path("images/Costumer.png", true), 4, true));
+    textures["costumer_green"] = loadTexture(img::load(make_absolute_path("images/Costumer_green.png", true), 4, true));
     textures["homepage"] = loadTexture(img::load(make_absolute_path("images/homepage.png", true), 4, true));
     textures["wasted"] = loadTexture(img::load(make_absolute_path("images/wasted.png", true), 4, true));
     textures["victory"] = loadTexture(img::load(make_absolute_path("images/victory.png", true), 4, true));
@@ -51,24 +48,7 @@ App::App() : _previousTime(0.0), _viewSize(2.0), _mouseX(0.0f), _mouseY(0.0f)
 
     _mapWidth = static_cast<float>(image_map.width()) / 10.0f;
     _mapHeight = static_cast<float>(image_map.height()) / 10.0f;
-    // data.addEnemy({13,4,0,1,0});    data.addEnemy({13,4,0,2,0});    data.addEnemy({13,4,0,1.5,0});    data.addEnemy({13,4,0,0.5f,0});
 
-    // Afficher grid
-    std::cout << "Grid: " << std::endl;
-    data.printGrid();
-
-    // Afficher coordNodes
-    std::cout << "Coordonnée nodes: " << std::endl;
-    for (const auto &pair : data.coordNodes)
-    {
-        std::cout << "Key: " << pair.first << " Value: (" << pair.second.first << ", " << pair.second.second << ")" << std::endl;
-    }
-
-    // Afficher graph
-    std::cout << "Graph: " << std::endl;
-    data.graph.print_DFS(0);
-
-    std::cout << "Is everything valid: " << data.isEverythingValid() << std::endl;
 }
 
 void App::setup()
@@ -142,7 +122,7 @@ void App::render()
     // draw_quad_with_texture(_texture);
 
     draw_map(_xMin, 0.5f, TILE_WIDTH, TILE_HEIGHT, data, textures);
-    draw_enemies(_xMin, _mapHeight - 1, data.enemies, 0.1, textures["costumer"]);
+    draw_enemies(_xMin, _mapHeight - 1, data.enemies, 0.1, textures["costumer"] , textures["costumer_green"]);
 
     draw_projectiles(_xMin, _mapHeight - 1, data.projectiles, 0.08, textures);
 
@@ -189,6 +169,7 @@ void App::render()
     }
     display_money(data.money);
     display_score(data.waveCount);
+    display_warning(data.life);
 }
 
 void App::key_callback(int key, int scancode, int action, int mods) {
@@ -388,18 +369,22 @@ void App::renderWin()
 }
 
 void App::display_money(int money) {
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
     std::string moneyStr = std::to_string(money);
-    TextRenderer.Label(moneyStr.c_str(), 1200, 150, SimpleText::CENTER);
+    TextRenderer.SetColor(SimpleText::TEXT_COLOR, SimpleText::Color::BLACK);
+    TextRenderer.Label(moneyStr.c_str(), static_cast<int>(_width * 0.92) , static_cast<int>(_height * 0.2), SimpleText::CENTER);
     TextRenderer.Render();
 }
 
+void App::display_warning(int life) {
+    std::string warningStr = std::to_string(std::abs(life-3));
+    std::string message = "Warning: " + warningStr + " (max 3)";
+    TextRenderer.SetColor(SimpleText::TEXT_COLOR, SimpleText::Color::RED);
+    TextRenderer.Label(message.c_str(), static_cast<int>(_width * 0.922), static_cast<int>(_height * 0.3), SimpleText::CENTER);
+    TextRenderer.Render();
+}
 
 void App::display_score(int score) {
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
     std::string scoreStr = std::to_string(score);
-    TextRenderer.Label(scoreStr.c_str(), 1177, 325, SimpleText::CENTER);
+    TextRenderer.Label(scoreStr.c_str(), static_cast<int>(_width * 0.92), static_cast<int>(_height * 0.45), SimpleText::CENTER);
     TextRenderer.Render();
 }

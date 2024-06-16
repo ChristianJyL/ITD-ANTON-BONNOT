@@ -13,10 +13,10 @@ struct Tower{
     int range {};
     int cadence {};
     int cost {};
-    float lastAttackTime = 0;
+    double lastAttackTime = 0.0;
 
     bool isInRange(const Enemy& enemy) const;
-    void attack(std::vector<Enemy> &enemies, float currentTime, std::vector<Projectile> &projectiles) ;
+    void attack(std::vector<Enemy> &enemies, double currentTime, std::vector<Projectile> &projectiles) ;
 };
 
 Tower getTowerLongRange(int x, int y);

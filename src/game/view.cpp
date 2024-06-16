@@ -295,13 +295,19 @@ void draw_hovered_tower(float xOrigin, float yOrigin, float width, float height,
     draw_cell(xOrigin, yOrigin, width, height, texture);
 }
 
-void draw_enemies(float xOrigin, double yOrigin, std::vector<Enemy> enemies, float size, GLuint texture)
-{
+void draw_enemies(float xOrigin, double yOrigin, std::vector<Enemy> enemies, float size, GLuint textureEnemy1, GLuint textureEnemy2) //On sait qu'on a que deux types d'ennemi donc on se permet les mettre en paramètre comme ça
+{                                                                                                                                    //ce qu'on pourrait faire aussi, c'est récupérer la texture de l'ennemi dans la struct ennemi
     glPushMatrix();
     glTranslatef(xOrigin, yOrigin, 0);
     for (Enemy const &enemy : enemies)
     {
-        // std::cout << "x: " << enemy.x << " y: " << enemy.y << std::endl;
+        GLuint texture{};
+        if (enemy.speed == 0.8f){
+            texture = textureEnemy1;
+        }
+        else{
+            texture = textureEnemy2;
+        }
         enemy.draw_enemy(0.1, size, texture);
     }
     glPopMatrix();
