@@ -256,7 +256,11 @@ void Data::moveEnemy(Enemy &enemy, std::vector<int> const& pathList, float time)
     }
 
     if (enemy.currentPathIndex == pathList.size() - 1) { // a changer l'action ici (l'ennemi ne meurt pas mais c'est gameover)
-        isAlive = false;
+        life--;
+        if (life == 0) {
+            isAlive = false;
+        }
+        killEnemy(enemy);
     }
 }
 
