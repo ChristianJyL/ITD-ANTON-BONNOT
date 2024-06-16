@@ -1,4 +1,4 @@
-#include "model.hpp"
+#include "view.hpp"
 
 #include "glad/glad.h"
 

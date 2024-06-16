@@ -44,7 +44,7 @@ struct Data{
     int cardSelected = -1;
     int money = 400;
 
-
+    int life = 3;
     bool isAlive = true;
 
     TileType  getCell(int x, int y) const; // Récupère la valeur de la cellule à la position (x, y)

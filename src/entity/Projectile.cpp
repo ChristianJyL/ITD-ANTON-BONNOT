@@ -63,11 +63,10 @@ bool Projectile::isArrived(const std::vector<Enemy> &enemies) const
 
 int Projectile::getTypeTower() const
 { // On retourne le type de la tour en fonction des dégâts
-    switch (damage)
-    {
+    switch (damage){
     case 15:
         return 0;
-    case 10:
+    case 9:
         return 1;
     case 30:
         return 2;

@@ -10,7 +10,7 @@
 
 #include "simpletext.h"
 #include "other/utils.hpp"
-#include "model.hpp"
+#include "view.hpp"
 #include <string>
 
 static const float TILE_WIDTH = 0.1;
