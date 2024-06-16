@@ -16,7 +16,7 @@ static const int NB_CARDS = 3;
 App::App() : _previousTime(0.0), _viewSize(2.0), _mouseX(0.0f), _mouseY(0.0f)
 {
     // load what needs to be loaded here (for example textures)
-    img::Image image_map = {img::load(make_absolute_path("images/map3.png", true), 3, true)};
+    img::Image image_map = {img::load(make_absolute_path("images/map2.png", true), 3, true)};
     data.loadFromITD("data/map2.itd");
     data.putShortestPaths();
 
