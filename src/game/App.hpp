@@ -47,6 +47,7 @@ private:
 
     // Add your variables here
     GLuint _texture {};
+    // Stockage des textures dans un tableau associatif
     std::unordered_map<std::string, GLuint> textures {};
     std::unordered_map<int, GLuint> cards {};
     float _angle {};

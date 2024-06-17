@@ -75,7 +75,7 @@ void draw_one_card(GLuint textureId, float xOrigin, float yOrigin, float width, 
 }
 
 void draw_deck(std::unordered_map<int, GLuint> cards, float xOrigin, float yOrigin, float width, float height, int nb_cards)
-{ // mettre un vecteur de GLuint à terme pour les textures
+{
     glPushMatrix();
     glTranslatef(xOrigin, yOrigin, 0);
     float increment = width / nb_cards;
@@ -88,7 +88,7 @@ void draw_deck(std::unordered_map<int, GLuint> cards, float xOrigin, float yOrig
 }
 
 void draw_grid(float xOrigin, float yOrigin, float tileWidth, float tileHeight)
-{ // fonction d'aide pour voir la grille (à revoir parce que valeur brute pour l'instant)
+{ // fonction d'aide pour voir la grille
     glColor3f(1.0f, 1.0f, 1.0f);
 
     glBegin(GL_LINES);
@@ -151,32 +151,8 @@ void draw_menu(GLuint textureId, float xOrigin, float yOrigin, float width, floa
     glDisable(GL_TEXTURE_2D);
 }
 
-void draw_button(float xOrigin, float yOrigin, float width, float height, GLuint textureId){
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, textureId);
-    glPushMatrix();
-    glTranslatef(xOrigin, yOrigin, 0);
-
-    glBegin(GL_QUADS);
-    glTexCoord2d(0, 1);
-    glVertex2f(0, 0);
-    glTexCoord2d(1, 1);
-    glVertex2f(width, 0);
-    glTexCoord2d(1, 0);
-    glVertex2f(width, -height);
-    glTexCoord2d(0, 0);
-    glVertex2f(0, -height);
-    glEnd();
-    glPopMatrix();
-    glBindTexture(GL_TEXTURE_2D, 0);
-    glDisable(GL_TEXTURE_2D);
-    glDisable(GL_BLEND);
-}
-
 void draw_map(float x, float y, float tileWidth, float tileHeight, const Data &data, std::unordered_map<std::string, GLuint> textures)
-{ // Dessine la map en fonction de la grille de data (remplacer les couleurs avec les textures à terme)
+{ // Dessine la map en fonction de la grille de data
     glPushMatrix();
     glTranslatef(x, y, 0);
     glColor3f(1, 1, 1);
@@ -269,7 +245,7 @@ void draw_hovered_card(float xOrigin, float yOrigin, float width, float height)
 
 void draw_hovered_tower(float xOrigin, float yOrigin, float width, float height, int range, GLuint texture)
 {
-    // dessin de la zone de la tour selon la distanche de Chebyshev
+    // dessin de la zone de la tour selon la distance de Chebyshev
     glPushMatrix();
     glTranslatef(xOrigin - width * range, yOrigin + height * range, 0);
     glColor3f(0.0f, 0.0f, 1.0f);
@@ -280,17 +256,6 @@ void draw_hovered_tower(float xOrigin, float yOrigin, float width, float height,
     glVertex2f(0, -2 * range * height - height);
     glEnd();
     glPopMatrix();
-    // petit carré pour la tour
-    // glPushMatrix();
-    // glTranslatef(xOrigin, yOrigin, 0);
-    // glColor3f(0.0f, 0.0f, 1.0f);
-    // glBegin(GL_QUADS);
-    // glVertex2f(0, 0);
-    // glVertex2f(width, 0);
-    // glVertex2f(width, -height);
-    // glVertex2f(0, -height);
-    // glEnd();
-    // glPopMatrix();
     glColor3f(1, 1, 1);
     draw_cell(xOrigin, yOrigin, width, height, texture);
 }

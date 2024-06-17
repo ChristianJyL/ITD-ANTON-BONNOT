@@ -119,8 +119,6 @@ void App::render()
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
-    // draw_quad_with_texture(_texture);
-
     draw_map(_xMin, 0.5f, TILE_WIDTH, TILE_HEIGHT, data, textures);
     draw_enemies(_xMin, _mapHeight - 1, data.enemies, 0.1, textures["costumer"] , textures["costumer_green"]);
 
@@ -130,8 +128,6 @@ void App::render()
     {
         draw_grid_available(_xMin, 0.5f, TILE_WIDTH, TILE_HEIGHT, data);
     }
-
-    // draw_grid(_xMin, -1, TILE_WIDTH, TILE_HEIGHT);
 
     if (_mouseX >= _xMin && _mouseX < _xMin + _mapWidth && _mouseY >= -1 && _mouseY < 0.5)
     {
@@ -161,11 +157,13 @@ void App::render()
 
     draw_menu(textures["menu"], _xMin + _mapWidth, 1, 0.55, 2);
 
+    // Gestion du bouton de pause
+
     if (isPaused)
     {
-        draw_button(_xMin + _mapWidth + 0.175, -0.15, 2 * TILE_WIDTH, 2 * TILE_HEIGHT, textures["play"]);
+        draw_cell(_xMin + _mapWidth + 0.175, -0.15, 2 * TILE_WIDTH, 2 * TILE_HEIGHT, textures["play"]);
     } else {
-        draw_button(_xMin + _mapWidth + 0.175, -0.15, 2 * TILE_WIDTH, 2 * TILE_HEIGHT, textures["pause"]);
+        draw_cell(_xMin + _mapWidth + 0.175, -0.15, 2 * TILE_WIDTH, 2 * TILE_HEIGHT, textures["pause"]);
     }
     display_money(data.money);
     display_score(data.waveCount);
@@ -209,7 +207,7 @@ void App::mouse_button_callback(int button, int action, int mods) {
                 std::cout << "Tile clicked: (" << tileX << ", " << tileY << ")" << std::endl;
                 data.unselectCard();
             } else {
-                // Placement de la tour selectionnée
+                // Placement de la tour sélectionnée
                 int tileX = static_cast<int>((x - _xMin) / TILE_WIDTH);
                 int tileY = static_cast<int>(-(y - (_mapHeight - 1)) / TILE_HEIGHT);
                 std::cout << "Tile clicked: (" << tileX << ", " << tileY << ")" << std::endl;
@@ -299,10 +297,6 @@ void App::renderMainMenu()
     glPopMatrix();
     glBindTexture(GL_TEXTURE_2D, 0);
     glDisable(GL_TEXTURE_2D);
-
-    // TextRenderer.Label("Main Menu", 640, 320, SimpleText::CENTER);
-    // TextRenderer.Label("Press Enter to Start", 643, 360, SimpleText::CENTER);
-    // TextRenderer.Render();
 }
 
 void App::renderGameOver()
@@ -328,6 +322,8 @@ void App::renderGameOver()
     glPopMatrix();
     glBindTexture(GL_TEXTURE_2D, 0);
     glDisable(GL_TEXTURE_2D);
+
+    // Affichage du score
 
     TextRenderer.SetColor(SimpleText::TEXT_COLOR, SimpleText::Color::WHITE);
     TextRenderer.Label("Fired at round :", 640, 500, SimpleText::CENTER);
@@ -361,11 +357,6 @@ void App::renderWin()
     glPopMatrix();
     glBindTexture(GL_TEXTURE_2D, 0);
     glDisable(GL_TEXTURE_2D);
-
-    // TextRenderer.Label("Score :", 640, 320, SimpleText::CENTER);
-    // std::string scoreStr = std::to_string(data.waveCount);
-    // TextRenderer.Label(scoreStr.c_str(), 643, 360, SimpleText::CENTER);
-    // TextRenderer.Render();
 }
 
 void App::display_money(int money) {

@@ -27,9 +27,4 @@ struct Enemy{
         static int id = 0;
         return id++;
     }
-
-    void hpbar (){
-        
-    }
-
 };
