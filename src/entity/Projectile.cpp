@@ -1,5 +1,4 @@
 #include "Projectile.hpp"
-#include "Tower.hpp"
 
 bool Projectile::isTargetAlive(const std::vector<Enemy> &enemies) const
 {

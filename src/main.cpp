@@ -1,8 +1,4 @@
 #include <glad/glad.h>
-#include "other/file.hpp"
-#include "other/graph.hpp"
-
-
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
 
@@ -43,6 +39,7 @@ int main() {
 
     // Make the window's context current
     glfwMakeContextCurrent(window);
+    glfwSetWindowTitle(window, "I want to talk to your manager");
 
     // Intialize glad (loads the OpenGL functions)
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
@@ -103,8 +100,8 @@ int main() {
 		}
     }
 
-    // stbi_image_free(loaded_floor);
-    // glDeleteTextures(1, &textureID);
+    app.free_textures();
+
     glfwTerminate();
     return 0;
 }

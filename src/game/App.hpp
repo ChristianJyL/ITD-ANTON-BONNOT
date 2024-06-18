@@ -28,7 +28,8 @@ public:
     void renderWin();
     void display_money(int money);
     void display_score(int score);
-
+    void display_warning(int life);
+    void free_textures();
 private:
     void render();
     GameState gameState = GameState::MainMenu;
@@ -46,16 +47,13 @@ private:
     float _mouseX, _mouseY;
 
     // Add your variables here
-    GLuint _texture {};
     // Stockage des textures dans un tableau associatif
     std::unordered_map<std::string, GLuint> textures {};
     std::unordered_map<int, GLuint> cards {};
-    float _angle {};
 
     SimpleText TextRenderer {};
     SimpleText TextRenderer2 {};
-
     bool isPaused = false;
 
-    void display_warning(int life);
+
 };

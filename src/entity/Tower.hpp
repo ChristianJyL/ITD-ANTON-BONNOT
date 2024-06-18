@@ -8,7 +8,7 @@
 #include <iostream>
 
 struct Tower{
-    int x,y {};
+    int x{},y {};
     int power {};
     int range {};
     int cadence {};

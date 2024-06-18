@@ -9,10 +9,10 @@ TileType Data::getCell(int x, int y) const {
     return grid[y * width + x];
 }
 
-void Data::initGrid(int width, int height) {
-    this->width = width;
-    this->height = height;
-    grid.resize(width * height, TileType::Empty);
+void Data::initGrid(int newWidth, int newHeight) {
+    this->width = newWidth;
+    this->height = newHeight;
+    grid.resize(newWidth * newHeight, TileType::Empty);
 }
 
 bool Data::isCardSelected() const {
@@ -30,7 +30,7 @@ void Data::unselectCard() {
 void Data::printGrid() const {
     for (int y = 0; y < height; ++y)
     {
-        for (unsigned int x = 0; x < width; ++x)
+        for (int x = 0; x < width; ++x)
         {
             std::cout << getCell(x, y);
         }
@@ -39,6 +39,17 @@ void Data::printGrid() const {
 }
 
 //ITD----------------------------------------------------------------------------------------------------------------
+/**
+ * Charge les données de jeu à partir d'un fichier ITD.
+ *
+ * Cette fonction prend en paramètre le chemin d'accès au fichier ITD à charger.
+ * Elle lit le fichier ITD, valide son contenu, puis initialise les données de jeu en fonction.
+ * Les données de jeu incluent le point de départ, le point de sortie, le chemin, la carte, le graphe et les coordonnées des noeuds.
+ * Si le fichier ITD n'est pas valide, une exception est levée.
+ *
+ * @param pathFile Le chemin d'accès au fichier ITD à charger.
+ * @throws std::runtime_error si le fichier ITD est invalide.
+ */
 void Data::loadFromITD(std::filesystem::path const& pathFile) {
     ITD itd;
     if (!isValidITD(pathFile, itd)) {
@@ -56,7 +67,7 @@ void Data::loadFromITD(std::filesystem::path const& pathFile) {
 
     for (int y = 0; y < image_map.height(); ++y)
     {
-        for (unsigned int x = 0; x < image_map.width(); ++x)
+        for (int x = 0; x < image_map.width(); ++x)
         {
             auto const& pixel {pixels[y * image_map.width() + x]};
             if (pixel == Data::path){
@@ -67,22 +78,31 @@ void Data::loadFromITD(std::filesystem::path const& pathFile) {
                 if (nodeIndex != -1) {
                     entries.push_back(nodeIndex);
                 } else {
-                    throw std::runtime_error{"Invalid ITD file"};
+                    throw std::runtime_error{"The entry node is not valid"};
                 }
             } else if (pixel == Data::end) {
                 setCell(x, convertY(y, image_map.height()), TileType::Output);
                 exit = getNodeWithCoord(x, convertY(y, image_map.height()));
                 if (exit == -1) {
-                    throw std::runtime_error{"Invalid ITD file"};
+                    throw std::runtime_error{"The exit node is not valid"};
                 }
             }
         }
     }
 }
 
+/**
+ * Vérifie si tous les noeuds du jeu sont valides.
+ *
+ * Cette fonction parcourt tous les noeuds du jeu, représentés par la variable `coordNodes` de la struct.
+ * Pour chaque noeud, elle vérifie si la cellule correspondante dans la grille est un chemin, une entrée ou une sortie.
+ * Si un noeud ne répond pas à ces condition, la fonction renvoie false, indiquant que tous les noeuds ne sont pas valides.
+ * Sinon elle renvoie true
+ *
+ * @return true si tous les noeuds sont valides, false sinon.
+ */
 bool Data::isEverythingValid() const {
     for (const auto& node : coordNodes) {
-        int nodeIndex = node.first;
         int nodeX = node.second.first;
         int nodeY = node.second.second;
         TileType gridIndex = getCell(nodeX, nodeY);
@@ -94,31 +114,41 @@ bool Data::isEverythingValid() const {
 }
 
 //GRAPH&DIJKSTRA&PATH-------------------------------------------------------------------------------------------------------
+
 int Data::getNodeWithCoord(int x, int y) {
     for (const auto& node : coordNodes) {
         if (node.second.first == x && node.second.second == y) {
             return node.first;
         }
     }
-    return -1;
+    return -1; // si on ne trouve pas le noeud
 }
 
 std::pair<int,int> Data::getCoordWithNode(int node) {
     return coordNodes[node];
 }
 
+/**
+ * Récupère le chemin le plus court à partir de l'entrée donnée.
+ *
+ * Cette fonction utilise l'algorithme de Dijkstra pour trouver le chemin le plus court entre l'entrée donnée et la sortie.
+ * Elle renvoie un vecteur d'entiers représentant le chemin le plus court, où chaque entier est l'index d'un noeud sur le chemin.
+ *
+ * @param entry L'index du noeud d'entrée à partir duquel trouver le chemin le plus court.
+ * @return Un vecteur d'entiers représentant le chemin le plus court de l'entrée à la sortie.
+ */
 std::vector<int> Data::getShortestPath(int entry) const{
     std::unordered_map<int, std::pair<float, int>> dijkstraTemp;
     dijkstraTemp = dijkstra(graph,entry, exit);
-    std::vector<int> path;
+    std::vector<int> pathResult;
     int currentNode = exit;
     while (currentNode != entry){
-        path.push_back(currentNode);
+        pathResult.push_back(currentNode);
         currentNode = dijkstraTemp[currentNode].second;
     }
-    path.push_back(entry);
-    std::reverse(path.begin(), path.end());
-    return path;
+    pathResult.push_back(entry);
+    std::reverse(pathResult.begin(), pathResult.end());
+    return pathResult;
 }
 
 void Data::putShortestPaths(){

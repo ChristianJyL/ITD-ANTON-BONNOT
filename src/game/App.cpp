@@ -16,11 +16,12 @@ static const int NB_CARDS = 3;
 App::App() : _previousTime(0.0), _viewSize(2.0), _mouseX(0.0f), _mouseY(0.0f)
 {
     // load what needs to be loaded here (for example textures)
-    img::Image image_map = {img::load(make_absolute_path("images/map2.png", true), 3, true)};
     data.loadFromITD("data/map2.itd");
+    if (!data.isEverythingValid())
+    {
+        throw std::runtime_error{"Something went wrong with the ITD file"};
+    }
     data.putShortestPaths();
-
-    _texture = loadTexture(image_map);
 
     // Chargement des textures
     textures["floor"] = loadTexture(img::load(make_absolute_path("images/floor.png", true), 4, true));
@@ -46,8 +47,9 @@ App::App() : _previousTime(0.0), _viewSize(2.0), _mouseX(0.0f), _mouseY(0.0f)
     cards[1] = loadTexture(img::load(make_absolute_path("images/bucketMenu.png", true), 4, true));
     cards[2] = loadTexture(img::load(make_absolute_path("images/burgerMenu.png", true), 4, true));
 
-    _mapWidth = static_cast<float>(image_map.width()) / 10.0f;
-    _mapHeight = static_cast<float>(image_map.height()) / 10.0f;
+
+    _mapWidth = static_cast<float>(data.width) / 10.0f;
+    _mapHeight = static_cast<float>(data.height) / 10.0f;
 
 }
 
@@ -324,12 +326,11 @@ void App::renderGameOver()
     glDisable(GL_TEXTURE_2D);
 
     // Affichage du score
-
     TextRenderer.SetColor(SimpleText::TEXT_COLOR, SimpleText::Color::WHITE);
-    TextRenderer.Label("Fired at round :", 640, 500, SimpleText::CENTER);
+    TextRenderer.Label("Fired at round :", static_cast<int>(_width * 0.5), static_cast<int>(_height * 0.7), SimpleText::CENTER);
     std::string scoreStr = std::to_string(data.waveCount);
-    TextRenderer.Label(scoreStr.c_str(), 643, 515, SimpleText::CENTER);
-    TextRenderer.Label("Press Enter to Quit", 640, 600, SimpleText::CENTER);
+    TextRenderer.Label(scoreStr.c_str(), static_cast<int>(_width * 0.5), static_cast<int>(_height * 0.72), SimpleText::CENTER);
+    TextRenderer.Label("Press Enter to Quit", static_cast<int>(_width * 0.5), static_cast<int>(_height * 0.90), SimpleText::CENTER);
     TextRenderer.Render();
 }
 
@@ -357,6 +358,10 @@ void App::renderWin()
     glPopMatrix();
     glBindTexture(GL_TEXTURE_2D, 0);
     glDisable(GL_TEXTURE_2D);
+
+    TextRenderer.SetColorf(SimpleText::TEXT_COLOR, 241/255.0f, 196/255.0f, 15/255.0f, 1);
+    TextRenderer.Label("Press Enter to Quit", static_cast<int>(_width * 0.5), static_cast<int>(_height * 0.98), SimpleText::CENTER);
+    TextRenderer.Render();
 }
 
 void App::display_money(int money) {
@@ -378,4 +383,13 @@ void App::display_score(int score) {
     std::string scoreStr = std::to_string(score);
     TextRenderer.Label(scoreStr.c_str(), static_cast<int>(_width * 0.92), static_cast<int>(_height * 0.45), SimpleText::CENTER);
     TextRenderer.Render();
+}
+
+void App::free_textures() {
+    for (auto& texture : textures) {
+        glDeleteTextures(1, &texture.second);
+    }
+    for (auto& card : cards) {
+        glDeleteTextures(1, &card.second);
+    }
 }

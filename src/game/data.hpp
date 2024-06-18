@@ -50,7 +50,7 @@ struct Data{
     TileType  getCell(int x, int y) const; // Récupère la valeur de la cellule à la position (x, y)
     void setCell(int x, int y, TileType value) ; // Modifie la valeur de la cellule à la position (x, y)
     void loadFromITD(std::filesystem::path const& pathFile) ; // Charge les données à partir d'un fichier ITD
-    void initGrid(int width, int height) ; // Initialise la grille avec des cases vides
+    void initGrid(int newWidth, int newHeight) ; // Initialise la grille avec des cases vides
     void printGrid() const; // Affiche la grille
     bool isEverythingValid() const; // Vérifie si les données sont valides
     bool isCardSelected() const; // Vérifie si une carte est sélectionnée
