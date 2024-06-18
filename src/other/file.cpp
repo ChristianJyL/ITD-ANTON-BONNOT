@@ -74,7 +74,7 @@ bool isValidITD(std::filesystem::path const& path, ITD &itd){
 
     std::ifstream file {make_absolute_path(path)};
     if (!file.is_open()) {
-        std::cout << "Could not open file: " << path << std::endl;
+        //std::cout << "Could not open file: " << path << std::endl;
         throw std::runtime_error{"Could not open file"};
     }
     std::string line;

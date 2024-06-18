@@ -198,7 +198,7 @@ void App::mouse_button_callback(int button, int action, int mods) {
         float x = (xpos - _width / 2) * 2.0f / _height;
         float y = 1 - ypos / (_height / 2);
 
-        std::cout << "x: " << x << " y: " << y << std::endl;
+        //std::cout << "x: " << x << " y: " << y << std::endl;
 
         // Détermine la partie de la fenêtre sur laquelle l'utilisateur a cliqué
         if (x >= _xMin && x < _xMin + _mapWidth && y >= -1 && y < _mapHeight - 1) { // Clique sur la map
@@ -206,27 +206,23 @@ void App::mouse_button_callback(int button, int action, int mods) {
                 // Calculer la tuile sur laquelle l'utilisateur a cliqué
                 int tileX = static_cast<int>((x - _xMin) / TILE_WIDTH);
                 int tileY = static_cast<int>(-(y - (_mapHeight - 1)) / TILE_HEIGHT);
-                std::cout << "Tile clicked: (" << tileX << ", " << tileY << ")" << std::endl;
+                //std::cout << "Tile clicked: (" << tileX << ", " << tileY << ")" << std::endl;
                 data.unselectCard();
             } else {
                 // Placement de la tour sélectionnée
                 int tileX = static_cast<int>((x - _xMin) / TILE_WIDTH);
                 int tileY = static_cast<int>(-(y - (_mapHeight - 1)) / TILE_HEIGHT);
-                std::cout << "Tile clicked: (" << tileX << ", " << tileY << ")" << std::endl;
-                if (data.placeCard(tileX, tileY)) {
-                    std::cout << "Card placed" << std::endl;
-                } else {
-                    std::cout << "Card not placed" << std::endl;
-                }
+                //std::cout << "Tile clicked: (" << tileX << ", " << tileY << ")" << std::endl;
+                data.placeCard(tileX, tileY);
                 data.unselectCard();
             }
         } else if (x >= _xMin && x < _xMin + _mapWidth && y >= _mapHeight - 1 && y < 1) { // Clique sur le deck
-            std::cout << "Card" << std::endl;
+            //std::cout << "Card" << std::endl;
             // Calculer la carte sur laquelle l'utilisateur a cliqué
             int cardX = static_cast<int>((x - _xMin) / (_mapWidth /
                                                         NB_CARDS)); // a voir pour utiliser une variable pour avoir quelque chose de variable
             data.selectCard(cardX);
-            std::cout << "Card clicked: " << data.cardSelected << std::endl;
+            //std::cout << "Card clicked: " << data.cardSelected << std::endl;
         } else { // Clique sur le menu/info (avec un else pour l'instant, à voir si on change)
             if ( x >= _xMin + _mapWidth + 0.175 && x < _xMin + _mapWidth + 0.175 + 2 * TILE_WIDTH && y <= -0.15 && y > -0.15 - 2 * TILE_HEIGHT) {
                 if (isPaused) {

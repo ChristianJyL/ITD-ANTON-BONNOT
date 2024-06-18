@@ -309,7 +309,7 @@ void Data::moveEnemies(double time) { //on bouge tous les ennemis
         if (enemy.hp <= 0) {
             money += enemy.reward;
             killEnemy(enemy);
-            std::cout << money << std::endl;
+            //std::cout << money << std::endl;
         }
     }
 }
