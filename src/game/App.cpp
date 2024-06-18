@@ -9,8 +9,8 @@
 #include "view.hpp"
 #include <string>
 
-static const float TILE_WIDTH = 0.1;
-static const float TILE_HEIGHT = 0.1;
+static const float TILE_WIDTH = 0.1f;
+static const float TILE_HEIGHT = 0.1f;
 static const int NB_CARDS = 3;
 
 App::App() : _previousTime(0.0), _viewSize(2.0), _mouseX(0.0f), _mouseY(0.0f)
@@ -122,9 +122,9 @@ void App::render()
     glLoadIdentity();
 
     draw_map(_xMin, 0.5f, TILE_WIDTH, TILE_HEIGHT, data, textures);
-    draw_enemies(_xMin, _mapHeight - 1, data.enemies, 0.1, textures["costumer"] , textures["costumer_green"]);
+    draw_enemies(_xMin, _mapHeight - 1, data.enemies, 0.1f, textures["costumer"] , textures["costumer_green"]);
 
-    draw_projectiles(_xMin, _mapHeight - 1, data.projectiles, 0.08, textures);
+    draw_projectiles(_xMin, _mapHeight - 1, data.projectiles, 0.08f, textures);
 
     if (data.isCardSelected())
     {
@@ -133,14 +133,14 @@ void App::render()
 
     if (_mouseX >= _xMin && _mouseX < _xMin + _mapWidth && _mouseY >= -1 && _mouseY < 0.5)
     {
-        int tileX = (_mouseX - _xMin) / TILE_WIDTH;
-        int tileY = -(_mouseY - 0.5f) / TILE_HEIGHT;
-        draw_hovered_cell(_xMin + tileX * TILE_WIDTH, 0.5f - tileY * TILE_HEIGHT, TILE_WIDTH, TILE_HEIGHT);
+        int tileX = static_cast<int> ((_mouseX - _xMin) / TILE_WIDTH);
+        int tileY =  static_cast<int> (-(_mouseY - 0.5f) / TILE_HEIGHT);
+        draw_hovered_cell(_xMin + (float) tileX * TILE_WIDTH, 0.5f -  (float) tileY * TILE_HEIGHT, TILE_WIDTH, TILE_HEIGHT);
 
         if (data.isCardSelected())
         {
             int Range = getTowerRange(data.cardSelected);
-            draw_hovered_tower(_xMin + tileX * TILE_WIDTH, 0.5f - tileY * TILE_HEIGHT, TILE_WIDTH, TILE_HEIGHT, Range, textures["towerSlow"]);
+            draw_hovered_tower(_xMin + (float) tileX * TILE_WIDTH, 0.5f - (float) tileY * TILE_HEIGHT, TILE_WIDTH, TILE_HEIGHT, Range, textures["towerSlow"]);
         }
     }
 
@@ -148,24 +148,24 @@ void App::render()
 
     if (_mouseX >= _xMin && _mouseX < _xMin + _mapWidth && _mouseY >= 0.5 && _mouseY < 1)
     {
-        int cardX = (_mouseX - _xMin) / (3.0f / NB_CARDS);
-        draw_hovered_card(_xMin + cardX * (3.0f / NB_CARDS), 1.0f, 3.0f / NB_CARDS, 0.5f);
+        int cardX = static_cast<int> ((_mouseX - _xMin) / (3.0f / NB_CARDS));
+        draw_hovered_card(_xMin + (float) cardX * (3.0f / NB_CARDS), 1.0f, 3.0f / NB_CARDS, 0.5f);
     }
 
     if (data.isCardSelected())
     {
-        draw_hovered_card(_xMin + data.cardSelected * (3.0f / NB_CARDS), 1.0f, 3.0f / NB_CARDS, 0.5f);
+        draw_hovered_card(_xMin + (float) data.cardSelected * (3.0f / NB_CARDS), 1.0f, 3.0f / NB_CARDS, 0.5f);
     }
 
-    draw_menu(textures["menu"], _xMin + _mapWidth, 1, 0.55, 2);
+    draw_menu(textures["menu"], _xMin + _mapWidth, 1, 0.55f, 2);
 
     // Gestion du bouton de pause
 
     if (isPaused)
     {
-        draw_cell(_xMin + _mapWidth + 0.175, -0.15, 2 * TILE_WIDTH, 2 * TILE_HEIGHT, textures["play"]);
+        draw_cell(_xMin + _mapWidth + 0.175, -0.15f, 2 * TILE_WIDTH, 2 * TILE_HEIGHT, textures["play"]);
     } else {
-        draw_cell(_xMin + _mapWidth + 0.175, -0.15, 2 * TILE_WIDTH, 2 * TILE_HEIGHT, textures["pause"]);
+        draw_cell(_xMin + _mapWidth + 0.175, -0.15f, 2 * TILE_WIDTH, 2 * TILE_HEIGHT, textures["pause"]);
     }
     display_money(data.money);
     display_score(data.waveCount);
@@ -195,18 +195,18 @@ void App::mouse_button_callback(int button, int action, int mods) {
         double xpos, ypos;
         // Récupère la position actuelle du curseur
         glfwGetCursorPos(glfwGetCurrentContext(), &xpos, &ypos);
-        float x = (xpos - _width / 2) * 2.0f / _height;
-        float y = 1 - ypos / (_height / 2);
+        float x =  (xpos - _width / 2.0f) * 2.0f / _height;
+        float y = 1.0f -ypos  / (_height / 2.0);
 
         //std::cout << "x: " << x << " y: " << y << std::endl;
 
         // Détermine la partie de la fenêtre sur laquelle l'utilisateur a cliqué
         if (x >= _xMin && x < _xMin + _mapWidth && y >= -1 && y < _mapHeight - 1) { // Clique sur la map
             if (!data.isCardSelected()) {
-                // Calculer la tuile sur laquelle l'utilisateur a cliqué
+                /*
                 int tileX = static_cast<int>((x - _xMin) / TILE_WIDTH);
                 int tileY = static_cast<int>(-(y - (_mapHeight - 1)) / TILE_HEIGHT);
-                //std::cout << "Tile clicked: (" << tileX << ", " << tileY << ")" << std::endl;
+                std::cout << "Tile clicked: (" << tileX << ", " << tileY << ")" << std::endl;*/
                 data.unselectCard();
             } else {
                 // Placement de la tour sélectionnée
@@ -217,13 +217,10 @@ void App::mouse_button_callback(int button, int action, int mods) {
                 data.unselectCard();
             }
         } else if (x >= _xMin && x < _xMin + _mapWidth && y >= _mapHeight - 1 && y < 1) { // Clique sur le deck
-            //std::cout << "Card" << std::endl;
-            // Calculer la carte sur laquelle l'utilisateur a cliqué
-            int cardX = static_cast<int>((x - _xMin) / (_mapWidth /
-                                                        NB_CARDS)); // a voir pour utiliser une variable pour avoir quelque chose de variable
+            int cardX = static_cast<int>((x - _xMin) / (_mapWidth /NB_CARDS)); // On récupère la carte cliquée
             data.selectCard(cardX);
             //std::cout << "Card clicked: " << data.cardSelected << std::endl;
-        } else { // Clique sur le menu/info (avec un else pour l'instant, à voir si on change)
+        } else { // Clique sur le menu/info
             if ( x >= _xMin + _mapWidth + 0.175 && x < _xMin + _mapWidth + 0.175 + 2 * TILE_WIDTH && y <= -0.15 && y > -0.15 - 2 * TILE_HEIGHT) {
                 if (isPaused) {
                     isPaused = false;
