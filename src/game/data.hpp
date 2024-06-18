@@ -63,7 +63,6 @@ struct Data{
     std::vector<int> getShortestPath(int entry) const; // Récupère le chemin le plus court
     void putShortestPaths();
 
-    void addTower(int x, int y , int cardSelected); // Ajoute une tour
     TileType getCardType(int index); // Récupère le type de la carte à l'index donné
     Tower getTower(int x, int y) const; // Récupère une tour
 

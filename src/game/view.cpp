@@ -61,7 +61,7 @@ void draw_deck(std::unordered_map<int, GLuint> cards, float xOrigin, float yOrig
 }
 
 void draw_grid(float xOrigin, float yOrigin, float tileWidth, float tileHeight)
-{ // fonction d'aide pour voir la grille
+{ //utilisé uniquement en tant que guide pour le début
     glColor3f(1.0f, 1.0f, 1.0f);
 
     glBegin(GL_LINES);
